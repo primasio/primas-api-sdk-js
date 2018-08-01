@@ -1,0 +1,10 @@
+{
+  "plugins": ["prettier"],
+  "extends": [
+    "tslint:latest",
+    "tslint-config-prettier"
+  ],
+  "rules": {
+    "object-literal-sort-keys": false
+  }
+}

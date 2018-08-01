@@ -1,0 +1,70 @@
+{
+  "name": "primas-sdk-nodejs",
+  "version": "0.1.0-alpha",
+  "description": "primas-sdk-nodejs",
+  "license": "MIT",
+  "repository": "",
+  "author": {
+    "name": "",
+    "email": "",
+    "url": ""
+  },
+  "keywords": [
+    ""
+  ],
+  "files": [
+    "lib"
+  ],
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "scripts": {
+    "clean": "rimraf lib && rimraf coverage",
+    "format": "prettier --write \"{src,__tests__}/**/*.ts\" --single-quote --trailing-comma es5",
+    "lint": "tslint --force --fix --format verbose \"{src,__tests__}/**/*.ts\"",
+    "prepublishOnly": "npm run build",
+    "prebuild": "npm run clean && npm run format && npm run lint && echo Using TypeScript && tsc --version",
+    "build": "tsc --pretty",
+    "start": "NODE_DEBUG=request ts-node src/index.ts",
+    "test": "NODE_DEBUG=request jest",
+    "coverage": "jest --coverage",
+    "watch": "npm run build -- --watch",
+    "watch:test": "jest --watch"
+  },
+  "dependencies": {
+    "bignumber.js": "^7.2.1",
+    "ethereumjs-util": "^5.2.0",
+    "keythereum": "^1.0.4",
+    "request": "^2.87.0"
+  },
+  "devDependencies": {
+    "@types/bignumber.js": "^5.0.0",
+    "@types/jest": "^22.0.1",
+    "@types/node": "^8.0.0",
+    "@types/underscore": "^1.8.8",
+    "@types/web3": "^1.0.1",
+    "coveralls": "^2.0.0",
+    "eslint-plugin-prettier": "^2.6.2",
+    "jest": "^22.0.4",
+    "prettier": "^1.5.2",
+    "rimraf": "^2.0.0",
+    "ts-jest": "^22.0.1",
+    "ts-node": "^3.2.0",
+    "tslint": "^5.0.0",
+    "tslint-config-prettier": "^1.1.0",
+    "typescript": "^2.3.0"
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "jest": {
+    "transform": {
+      ".(ts)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "testEnvironment": "node"
+  }
+}
