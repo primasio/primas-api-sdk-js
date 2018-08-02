@@ -14,40 +14,39 @@ Node.js >= 8.0.0 required.
 
 # Prerequisite
 
-You should have keystore in your workspace.
+You should have keystore in your workspace. As an alternative, you can provide the keystore option in the constructor config.
 
 # Summary
 
 - [Basic Usage](#basic-usage)
 - [Create A Primas Instance](#create-a-primas-instance)
 - [Operations](#operations)
-  - [Account](#account)
-    - metadata(params, callback)
-    - create(query, callback)
-    - credits(params, callback)
-    - contents(params, callback)
-    - groups(params, callback)
-    - shares(params, callback)
-    - sharesInGroup(params, callback)
-    - likes(params, callback)
-    - comments(params, callback)
-    - groupApplications(params, callback)
-    - shareApplications(params, callback)
-    - reports(params, callback)
-    - notifications(params, callback)
-    - avatar(params, callback)
-    - avatarImg(params, callback)
-
-  - [Token](#token)
-    - tokens(params, callback)
-    - incentives(params, callback)
-    - incentiveStats(params, callback)
-    - incentiveWithdrawals(params, callback)
-    - createIncentiveWithdrawal(accountId, params, callback)
-    - preLock(params, callback)
-    - createPreLock(accountId, params, callback)
-    - unPreLock(accountId, params, callback)
-    - locks(params, callback)
+    - [Account](#account)
+        - [.metadata(params, callback)](#metadataparams-callback)
+        - [.create(query, callback)](#createquery-callback)
+        - [.credits(params, callback)](#creditsparams-callback)
+        - [.contents(params, callback)](#contentsparams-callback)
+        - [.groups(params, callback)](#groupsparams-callback)
+        - [.shares(params, callback)](#sharesparams-callback)
+        - [.sharesInGroup(params, callback)](#sharesingroupparams-callback)
+        - [.likes(params, callback)](#likesparams-callback)
+        - [.comments(params, callback)](#commentsparams-callback)
+        - [.groupApplications(params, callback)](#groupapplicationsparams-callback)
+        - [.shareApplications(params, callback)](#shareapplicationsparams-callback)
+        - [.reports(params, callback)](#reportsparams-callback)
+        - [.notifications(params, callback)](#notificationsparams-callback)
+        - [.avatar(params, callback)](#avatarparams-callback)
+        - [.avatarImg(params, callback)](#avatarimgparams-callback)
+    - [Token](#token)
+        - [.tokens(params, callback)](#tokensparams-callback)
+        - [.incentives(params, callback)](#incentivesparams-callback)
+        - [.incentiveStats(params, callback)](#incentivestatsparams-callback)
+        - [.incentiveWithdrawals(params, callback)](#incentivewithdrawalsparams-callback)
+        - [.createIncentiveWithdrawal(accountId, params, callback)](#createincentivewithdrawalaccountid-params-callback)
+        - [.preLock(params, callback)](#prelockparams-callback)
+        - [.createPreLock(accountId, params, callback)](#createprelockaccountid-params-callback)
+        - [.unPreLock(accountId, params, callback)](#unprelockaccountid-params-callback)
+        - [.locks(params, callback)](#locksparams-callback)
 - [Known Errors](#known-errors)
 
 # Basic Usage
@@ -62,7 +61,13 @@ for example:
     address: "<Your address>",
     passphrase: "<Your password>"
   })
-  client.Account.metadata({accountId: '<account id>'})
+  client.Account.metadata({accountId: '<account id>'}, function (err, res) {
+    if (err) {
+      // handle error
+      return;
+    }
+    // handle res
+  })
 ```
 
 # Create A Primas Instance
@@ -80,7 +85,8 @@ example:
   var Primas = require('primas-sdk-nodejs');
   var client = new Primas({
     address: "<Your address>",
-    passphrase: "<Your password>"
+    passphrase: "<Your password>",
+    keystore: "key store object or string" // if this option is not provide, sdk will find keystore in the workspace
   })
 ```
 
@@ -378,7 +384,8 @@ parameters:
     - [type] {string} Type filter. "content", "group_create", "group_join" or "report".
 
 
-## Known Errors
+
+# Known Errors
 
 
 | result_code |result_msg|description|

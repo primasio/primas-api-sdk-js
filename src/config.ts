@@ -1,11 +1,6 @@
-export interface IConfig {
-  baseUrl?: string;
-  address: string;
-  passphrase: string;
-}
-
+import { IConfig } from './main/Base';
 const config: IConfig = {
-  baseUrl: 'http://10.0.0.63:8080/v3',
+  baseUrl: 'https://staging.primas.io/v3',
   address: '',
   passphrase: '',
 };

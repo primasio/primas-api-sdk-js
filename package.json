@@ -10,7 +10,10 @@
     "url": ""
   },
   "keywords": [
-    ""
+    "primas",
+    "nodejs",
+    "sdk",
+    "api"
   ],
   "files": [
     "lib"

@@ -1,29 +1,15 @@
-type Callback = (err: Error | null, res?: any) => void;
+import { Base, Callback } from './Base';
 
-export default class System {
-  private request: any;
-
-  constructor(options: any) {
-    this.request = options.request;
+export default class System extends Base<any> {
+  constructor(request: any) {
+    super(request);
   }
 
   public system(params: any, success: Callback) {
-    this.request.get(
-      this.getParams('/system', params),
-      (err: any, res: any, body: any) => {
-        if (err) {
-          return success(err);
-        }
-        success(null, body);
-      }
-    );
+    this.createLists('')(params, success);
   }
 
-  private getParams(url: string, params: any) {
-    const opt: any = {
-      url,
-      qs: params,
-    };
-    return opt;
+  protected getUrl(params: any) {
+    return '/system';
   }
 }

@@ -1,47 +1,8 @@
-import { sign, sort, toJSON } from '../utils/util';
+import { Base, Callback, IIncentive, ITokenParams } from './Base';
 
-type Callback = (err: Error | null, res?: any) => void;
-
-interface IIncentive {
-  node_id: string;
-  created: number;
-  amount: number;
-  node_fee: number;
-  signature?: string;
-}
-
-interface IAccountUpdateInfo {
-  version: string;
-  type: string;
-  tag: string;
-  parent_dna: string;
-  status: string;
-  updated: number;
-  name?: string;
-  abstract?: string;
-  avatar?: string;
-  creator?: {
-    account_id: string;
-    sub_account_id: string;
-  };
-  extra?: {
-    hash?: string;
-  };
-  signature?: string;
-}
-
-interface IParams {
-  accountId: string;
-  qs?: object;
-}
-
-export default class Token {
-  private privateKey: Buffer;
-  private request: any;
-
-  constructor(options: any) {
-    this.privateKey = options.privateKey;
-    this.request = options.request;
+export class Token extends Base<ITokenParams> {
+  constructor(request: any, protected options?: any) {
+    super(request, options);
   }
 
   /**
@@ -49,7 +10,7 @@ export default class Token {
    * @param params {accountId required, subAccountId optional}
    * @param success
    */
-  public tokens(params: IParams, success: Callback) {
+  public tokens(params: ITokenParams, success: Callback) {
     let url = this.getUrl(params);
     url += '/tokens';
     this.request.get(url, (err: any, res: any, body: any) => {
@@ -60,15 +21,15 @@ export default class Token {
     });
   }
 
-  public incentives(params: IParams, success: Callback) {
+  public incentives(params: ITokenParams, success: Callback) {
     this.createLists('tokens/incentives')(params, success);
   }
 
-  public incentiveStats(params: IParams, success: Callback) {
+  public incentiveStats(params: ITokenParams, success: Callback) {
     this.createLists('tokens/incentives/stats')(params, success);
   }
 
-  public incentiveWithdrawals(params: IParams, success: Callback) {
+  public incentiveWithdrawals(params: ITokenParams, success: Callback) {
     this.createLists('tokens/incentives/withdrawal')(params, success);
   }
 
@@ -77,22 +38,14 @@ export default class Token {
     params: IIncentive,
     success: Callback
   ) {
-    params.signature = sign(toJSON(sort(params)), this.privateKey);
-    this.request.post(
-      {
-        url: '/accounts/' + accountId + '/tokens/incentives/withdrawal',
-        body: params,
-      },
-      (err: any, res: any, body: any) => {
-        if (err) {
-          return success(err);
-        }
-        success(null, body);
-      }
+    this.operator(
+      params,
+      '/accounts/' + accountId + '/tokens/incentives/withdrawal',
+      success
     );
   }
 
-  public preLock(params: IParams, success: Callback) {
+  public preLock(params: ITokenParams, success: Callback) {
     this.createLists('tokens/pre_locks')(params, success);
   }
 
@@ -101,68 +54,27 @@ export default class Token {
     params: IIncentive,
     success: Callback
   ) {
-    params.signature = sign(toJSON(sort(params)), this.privateKey);
-    this.request.post(
-      {
-        url: '/accounts/' + accountId + 'tokens/pre_locks',
-        body: params,
-      },
-      (err: any, res: any, body: any) => {
-        if (err) {
-          return success(err);
-        }
-        success(null, body);
-      }
+    this.operator(
+      params,
+      '/accounts/' + accountId + 'tokens/pre_locks',
+      success
     );
   }
 
   public unPreLock(accountId: string, params: IIncentive, success: Callback) {
-    params.signature = sign(toJSON(sort(params)), this.privateKey);
-    this.request.delete(
-      {
-        url: '/accounts/' + accountId + 'tokens/pre_locks',
-        body: params,
-      },
-      (err: any, res: any, body: any) => {
-        if (err) {
-          return success(err);
-        }
-        success(null, body);
-      }
+    this.operator(
+      params,
+      '/accounts/' + accountId + 'tokens/pre_locks',
+      success,
+      'delete'
     );
   }
 
-  public locks(params: IParams, success: Callback) {
+  public locks(params: ITokenParams, success: Callback) {
     this.createLists('tokens/locks')(params, success);
   }
 
-  private createLists(path: string) {
-    return (params: IParams, success: Callback) => {
-      let url = this.getUrl(params);
-      url += '/' + path;
-      this.request.get(
-        this.getParams(url, params),
-        (err: any, res: any, body: any) => {
-          if (err) {
-            return success(err);
-          }
-          success(null, body);
-        }
-      );
-    };
-  }
-
-  private getParams(url: string, params: IParams) {
-    const opt: any = {
-      url,
-    };
-    if (params.qs) {
-      opt.qs = params.qs;
-    }
-    return opt;
-  }
-
-  private getUrl(params: IParams) {
+  protected getUrl(params: ITokenParams) {
     const url = '/accounts/' + params.accountId;
     return url;
   }
