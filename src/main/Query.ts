@@ -1,6 +1,6 @@
 import { Base, Callback } from './Base';
 
-export default class Query extends Base<any> {
+export class Query extends Base<any> {
   constructor(request: any) {
     super(request);
   }

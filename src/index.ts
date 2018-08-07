@@ -1,33 +1,52 @@
+import defaultsDeep = require('lodash/defaultsDeep');
 import * as request from 'request';
-import config from './config';
-import { Account } from './main/Account';
+import { API_VERSION, config } from './config';
+import * as Main from './main';
 import { IConfig } from './main/Base';
-import { Token } from './main/Token';
-import { genPrivateKey } from './utils/util';
+import { genPrivateKey, pathResolve } from './utils/util';
 
-export = class Primas {
-  public Account: Account;
-  // public Token: Token;
-  constructor(conf?: IConfig) {
+class Primas {
+  constructor(conf: {
+    node?: string;
+    address: string;
+    passphrase?: string;
+    keystorePath?: string;
+    keystore?: string;
+    json?: boolean;
+  }) {
     let options;
-    let baseRequest = request.defaults({
-      baseUrl: config.baseUrl,
-      json: true,
+    let baseRequest;
+    const myConf: IConfig = defaultsDeep({}, conf, config);
+    if (!myConf.address) {
+      throw new Error('address is required');
+    }
+    baseRequest = request.defaults({
+      baseUrl: pathResolve(myConf.node, API_VERSION),
+      json: myConf.json,
     });
-    if (conf) {
-      const myConf: IConfig = { ...config, ...conf };
-      baseRequest = request.defaults({
-        baseUrl: myConf.baseUrl,
-        json: true,
-      });
-      const privateKey = genPrivateKey(myConf.address, myConf.passphrase);
+    if (myConf.passphrase) {
+      const privateKey = genPrivateKey(
+        myConf.address,
+        myConf.passphrase,
+        myConf.keystorePath,
+        myConf.keystore
+      );
       options = {
         privateKey,
         address: myConf.address,
       };
     }
 
-    this.Account = new Account(baseRequest, options);
-    // this.Token = new Token(baseRequest, options);
+    for (const k in Main) {
+      if (Main.hasOwnProperty(k)) {
+        (this as any)[k] = new (Main as any)[k](
+          baseRequest,
+          options,
+          myConf.json
+        );
+      }
+    }
   }
-};
+}
+
+export = Primas;

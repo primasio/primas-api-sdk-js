@@ -1,8 +1,9 @@
 import { IConfig } from './main/Base';
-const config: IConfig = {
-  baseUrl: 'https://staging.primas.io/v3',
+export const config: IConfig = {
+  node: 'https://staging.primas.io',
   address: '',
   passphrase: '',
+  json: true,
 };
 
-export default config;
+export const API_VERSION = 'v3';

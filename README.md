@@ -76,8 +76,12 @@ use Primas constructor to create instance.
 
 options:
 
+- node [string] node url
 - address {string} your address with '0x' prefix
-- passphrase {string} your passphrase
+- passphrase [string] your passphrase, if not provide, you shoud use signer on your own
+- keystorePath [string] you can specify the dir of your keystore
+- keystore [string] the keystore string or object
+- json [boolean] use application/json or not
 
 example:
 

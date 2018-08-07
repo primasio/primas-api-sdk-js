@@ -1,8 +1,9 @@
+import defaultsDeep = require('lodash/defaultsDeep');
 import { Base, Callback, IIncentive, ITokenParams } from './Base';
 
 export class Token extends Base<ITokenParams> {
-  constructor(request: any, protected options?: any) {
-    super(request, options);
+  constructor(request: any, protected options?: any, json?: boolean) {
+    super(request, options, json);
   }
 
   /**
@@ -33,27 +34,21 @@ export class Token extends Base<ITokenParams> {
     this.createLists('tokens/incentives/withdrawal')(params, success);
   }
 
-  public createIncentiveWithdrawal(
-    accountId: string,
-    params: IIncentive,
-    success: Callback
-  ) {
-    this.operator(
-      params,
-      '/accounts/' + accountId + '/tokens/incentives/withdrawal',
-      success
+  public createIncentiveWithdrawal(accountId: string, params: IIncentive) {
+    this._metadata = this.buildParams(
+      defaultsDeep({}, params, {
+        created: +new Date(),
+      })
     );
+    this._url = '/accounts/' + accountId + '/tokens/incentives/withdrawal';
+    return this;
   }
 
   public preLock(params: ITokenParams, success: Callback) {
     this.createLists('tokens/pre_locks')(params, success);
   }
 
-  public createPreLock(
-    accountId: string,
-    params: IIncentive,
-    success: Callback
-  ) {
+  public createPreLock(accountId: string, params: any, success: Callback) {
     this.operator(
       params,
       '/accounts/' + accountId + 'tokens/pre_locks',
@@ -61,13 +56,15 @@ export class Token extends Base<ITokenParams> {
     );
   }
 
-  public unPreLock(accountId: string, params: IIncentive, success: Callback) {
-    this.operator(
-      params,
-      '/accounts/' + accountId + 'tokens/pre_locks',
-      success,
-      'delete'
+  public unPreLock(accountId: string, params: IIncentive) {
+    this._metadata = this.buildParams(
+      defaultsDeep({}, params, {
+        created: +new Date(),
+      })
     );
+    this._url = '/accounts/' + accountId + 'tokens/pre_locks';
+    this._method = 'delete';
+    return this;
   }
 
   public locks(params: ITokenParams, success: Callback) {

@@ -1,6 +1,6 @@
 import { Base, Callback } from './Base';
 
-export default class TimeLine extends Base<any> {
+export class Timeline extends Base<any> {
   constructor(request: any) {
     super(request);
   }

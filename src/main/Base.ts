@@ -1,21 +1,48 @@
+import defaultsDeep = require('lodash/defaultsDeep');
 import { sign, sort, toJSON } from '../utils/util';
 
 /**
  * basic types
  */
 
+export const DTCP_VERSION = '1.0';
+export enum PRIMAS_API_TYPE {
+  OBJECT = 'object',
+  RELATION = 'relation',
+}
+export enum PRIMAS_API_TAG {
+  ACCOUNT = 'account',
+  SHARE_REPORT = 'share_report',
+  ARTICLE = 'article',
+  IMAGE = 'image',
+  SHARE_LIKE = 'share_like',
+  SHARE_COMMENT = 'share_comment',
+  GROUP = 'groups',
+  GROUP_MEMBER = 'group_member',
+  GROUP_MEMBER_WHITELIST = 'group_member_whitelist',
+  GROUP_SHARE = 'group_share',
+}
+export enum PRIMAS_API_STATUS {
+  CREATED = 'created',
+  UPDATED = 'updated',
+  DELETED = 'deleted',
+}
+
 export type Callback = (err: Error | null, res?: any) => void;
 
 export interface IConfig {
-  baseUrl?: string;
+  node: string;
   address: string;
   passphrase: string;
+  keystorePath?: string;
+  keystore?: string;
+  json: boolean;
 }
 
 interface IAccount {
   version: string;
-  type: string;
-  tag: string;
+  type: 'object';
+  tag: 'account';
   name: string;
   abstract?: string;
   avatar?: string;
@@ -23,7 +50,6 @@ interface IAccount {
     account_id: string;
     sub_account_id: string;
   };
-  status: string;
   address?: string;
   extra?: {
     hash?: string;
@@ -33,11 +59,13 @@ interface IAccount {
 
 export interface IAccountCreateInfo extends IAccount {
   created: number;
+  status: 'created';
 }
 
 export interface IAccountUpdateInfo extends IAccount {
   parent_dna: string;
   updated: number;
+  status: 'updated';
 }
 
 export interface IIncentive {
@@ -58,7 +86,7 @@ export interface IReportInfo {
   creator?: object;
   created: number;
   status: string;
-  extra?: object;
+  extra: object;
   signature?: string;
 }
 
@@ -93,10 +121,32 @@ export interface IGroupParams extends IParams {
  * Base Class
  */
 export abstract class Base<T extends IParams> {
-  protected request: any;
+  protected _metadata: any = {};
+  protected _url: string = '';
+  protected _method: string = '';
+  constructor(
+    protected request: any,
+    protected options?: any,
+    protected json?: boolean
+  ) {}
 
-  constructor(request: any, protected options?: any) {
-    this.request = request;
+  public send(callback: Callback) {
+    if (this.options && this.options.privateKey) {
+      this._sign();
+    }
+    if (!this._metadata.signature) {
+      throw new Error('you must sign before send');
+    }
+    this.operator(this._metadata, this._url, callback, this._method);
+    this._method = '';
+  }
+
+  public beforeSign() {
+    return toJSON(sort(this._metadata));
+  }
+
+  public sign(signature: string) {
+    this._metadata.signature = signature;
   }
 
   protected operator(
@@ -106,22 +156,36 @@ export abstract class Base<T extends IParams> {
     method?: string
   ) {
     const m = method || 'post';
-    if (this.options) {
-      params.address = this.options.address;
-      params.signature = sign(toJSON(sort(params)), this.options.privateKey);
-    }
-    this.request[m](
-      {
-        url,
-        body: params,
-      },
-      (err: any, res: any, body: any) => {
-        if (err) {
-          return success(err);
-        }
-        success(null, body);
+    const data: any = { url };
+    if (this.json) {
+      data.body = params;
+    } else {
+      switch (params.tag) {
+        case PRIMAS_API_TAG.IMAGE:
+          data.formData = params;
+          break;
+        default:
+          data.form = params;
+          break;
       }
-    );
+    }
+    this.request[m](data, (err: any, res: any, body: any) => {
+      if (err) {
+        return success(err);
+      }
+      success(null, body);
+    });
+  }
+
+  protected buildParams(params: any) {
+    if (params.creator && params.creator.sub_account_id) {
+      if (!params.creator.account_id) {
+        throw new Error('missing root account when you create sub account!');
+      }
+    }
+    return defaultsDeep({}, params, {
+      version: DTCP_VERSION,
+    });
   }
 
   protected createLists(path: string) {
@@ -153,4 +217,8 @@ export abstract class Base<T extends IParams> {
   }
 
   protected abstract getUrl(params: T): string;
+
+  private _sign() {
+    this.sign(sign(this.beforeSign(), this.options.privateKey));
+  }
 }

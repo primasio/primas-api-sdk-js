@@ -1,4 +1,6 @@
+import * as fs from 'fs';
 import Primas = require('../src');
+import { sign } from '../src/utils/util';
 let p: any;
 beforeAll(() => {
   const address: string = '0xa42433b1619993ba2e55db742b61ace9461336a0';
@@ -9,33 +11,25 @@ beforeAll(() => {
   });
 });
 
-describe('account test', () => {
+describe('content test', () => {
   const id: string =
     '841208135430c77add1669e2e126161d64d9c79f0b5a3ce120c0ca57256db00f';
   const dna: string =
     '935dc498e922b92e905c2f9dbe0927e3199e3b37223211855946ae6f00574288';
 
-  // test('show account', done => {
-  //   p.Account.metadata(
-  //     {
-  //       accountId: id,
-  //     },
-  //     (err, res) => {
-  //       expect(err).toBeNull();
-  //       expect(res.data.id).toBe(id);
-  //       expect(res.data.title).toBe('node-test');
-  //       done();
-  //     }
-  //   );
-  // });
-
-  test('update account', done => {
-    p.Account.update(id, {
-      parent_dna: dna,
-      name: 'node-test2',
-      abstract: 'this is a test account update',
-    }).send((err, res) => {
+  test('create report', done => {
+    const content = p.ContentInteraction.createReport('share_id', {
+      src_id: '1',
+      dest_id: '2',
+      creator: { account_id: '3' },
+      extra: {
+        content: 'hello',
+        report_type: 'lucy',
+      },
+    });
+    content.send((err, res) => {
       if (err) {
+        console.log(err);
         return;
       }
       console.log(res);
@@ -45,11 +39,16 @@ describe('account test', () => {
     });
   });
 
-  test('create account', done => {
-    p.Account.create({
-      name: 'node-test',
-      abstract: 'this is a test account',
-    }).send((err, res) => {
+  test('create createComment', done => {
+    const content = p.ContentInteraction.createComment('share_id', {
+      src_id: '1',
+      dest_id: '2',
+      creator: { account_id: '3' },
+      extra: {
+        content: 'hello',
+      },
+    });
+    content.send((err, res) => {
       if (err) {
         console.log(err);
         return;

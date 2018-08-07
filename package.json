@@ -1,6 +1,6 @@
 {
   "name": "primas-sdk-nodejs",
-  "version": "0.1.1-0",
+  "version": "0.1.2",
   "description": "primas-sdk-nodejs",
   "license": "MIT",
   "repository": "",
@@ -37,11 +37,13 @@
     "bignumber.js": "^7.2.1",
     "ethereumjs-util": "^5.2.0",
     "keythereum": "^1.0.4",
+    "lodash": "^4.17.10",
     "request": "^2.87.0"
   },
   "devDependencies": {
     "@types/bignumber.js": "^5.0.0",
     "@types/jest": "^22.0.1",
+    "@types/lodash": "^4.14.116",
     "@types/node": "^8.0.0",
     "@types/underscore": "^1.8.8",
     "@types/web3": "^1.0.1",

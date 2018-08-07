@@ -1,6 +1,6 @@
 import { Base, Callback } from './Base';
 
-export default class Node extends Base<any> {
+export class Node extends Base<any> {
   constructor(request: any) {
     super(request);
   }

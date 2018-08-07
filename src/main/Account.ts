@@ -1,30 +1,50 @@
+import defaultsDeep = require('lodash/defaultsDeep');
 import {
   Base,
   Callback,
   IAccountCreateInfo,
   IAccountParams,
   IAccountUpdateInfo,
+  PRIMAS_API_STATUS,
+  PRIMAS_API_TAG,
+  PRIMAS_API_TYPE,
 } from './Base';
 
 export class Account extends Base<IAccountParams> {
-  constructor(request: any, protected options?: any) {
-    super(request, options);
+  constructor(request: any, options?: any, json?: boolean) {
+    super(request, options, json);
   }
 
   public metadata(params: IAccountParams, success: Callback) {
     this.createLists('metadata')(params, success);
   }
 
-  public create(params: IAccountCreateInfo, callback: Callback) {
-    this.operator(params, '/accounts', callback);
+  public create(params: IAccountCreateInfo) {
+    this._metadata = this.buildParams(
+      defaultsDeep({}, params, {
+        status: PRIMAS_API_STATUS.CREATED,
+        created: +new Date(),
+      })
+    );
+    this._url = '/accounts';
+    return this;
   }
 
-  public update(
-    accountId: string,
-    params: IAccountUpdateInfo,
-    success: Callback
-  ) {
-    this.operator(params, '/accounts' + accountId, success, 'put');
+  public update(accountId: string, params: IAccountUpdateInfo) {
+    if (params.creator && params.creator.sub_account_id) {
+      if (!params.creator.account_id) {
+        throw new Error('missing root account when you create sub account!');
+      }
+    }
+    this._metadata = this.buildParams(
+      defaultsDeep({}, params, {
+        status: PRIMAS_API_STATUS.UPDATED,
+        updated: +new Date(),
+      })
+    );
+    this._url = '/accounts/' + accountId;
+    this._method = 'put';
+    return this;
   }
 
   /**
@@ -113,5 +133,15 @@ export class Account extends Base<IAccountParams> {
       url += '/groups/' + params.groupId;
     }
     return url;
+  }
+
+  protected buildParams(params: IAccountCreateInfo) {
+    return super.buildParams(
+      defaultsDeep({}, params, {
+        tag: PRIMAS_API_TAG.ACCOUNT,
+        type: PRIMAS_API_TYPE.OBJECT,
+        address: this.options.address,
+      })
+    );
   }
 }

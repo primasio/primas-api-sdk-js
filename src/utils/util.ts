@@ -18,8 +18,20 @@ import keythereum = require('keythereum');
  * @param password
  * @param callback
  */
-export function genPrivateKey(address: string, password: string): Buffer {
-  const dir = process.cwd();
+export function genPrivateKey(
+  address: string,
+  password: string,
+  keystorePath?: string,
+  keystore?: string
+): Buffer {
+  let dir;
+  if (keystore) {
+    if (typeof keystore === 'string') {
+      keystore = JSON.parse(keystore);
+    }
+    return keythereum.recover(password, keystore);
+  }
+  dir = keystorePath ? keystorePath : process.cwd();
   try {
     const files = fs.readdirSync(dir);
     if (files.length === 0) {
@@ -139,3 +151,21 @@ export const toJSON = (obj: any) => {
   ret = ret.replace(/,$/, '}');
   return ret;
 };
+
+export function pathResolve(...args: string[]) {
+  let prefix = '';
+  let base = '';
+  const p1 = args[0].match(/(.*:\/\/)(.*)/);
+  if (p1) {
+    prefix = p1[1];
+    base = p1[2];
+  }
+  args[0] = base;
+  let all = args.join('/');
+  all = all.replace(/\/\//, '/');
+  while (/\/\w*\/\.\./.test(all)) {
+    all = all.replace(/\/\w*\/\.\./, '');
+  }
+  all = all.replace(/\/\./g, '');
+  return prefix + all;
+}

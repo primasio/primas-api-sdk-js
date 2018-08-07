@@ -1,10 +1,18 @@
-import { Base, Callback, IContentInteractionParams, IReportInfo } from './Base';
+import { bufferToHex, sha256 } from 'ethereumjs-util';
+import defaultsDeep = require('lodash/defaultsDeep');
+import {
+  Base,
+  Callback,
+  IContentInteractionParams,
+  IReportInfo,
+  PRIMAS_API_STATUS,
+  PRIMAS_API_TAG,
+  PRIMAS_API_TYPE,
+} from './Base';
 
-export default class ContentInteraction extends Base<
-  IContentInteractionParams
-> {
-  constructor(request: any, protected options?: any) {
-    super(request, options);
+export class ContentInteraction extends Base<IContentInteractionParams> {
+  constructor(request: any, protected options?: any, json?: boolean) {
+    super(request, options, json);
   }
 
   public shares(params: IContentInteractionParams, success: Callback) {
@@ -19,34 +27,53 @@ export default class ContentInteraction extends Base<
     this.createLists('reports')(params, success);
   }
 
-  public createReport(
-    shareId: string,
-    params: IReportInfo,
-    callback: Callback
-  ) {
-    this.operator(params, `/shares/${shareId}/reports`, callback);
+  public createReport(shareId: string, params: IReportInfo) {
+    if (!params.extra) {
+      throw new Error('extra content is required');
+    }
+    this._metadata = this.buildParams(
+      defaultsDeep({}, params, {
+        tag: PRIMAS_API_TAG.SHARE_REPORT,
+        status: PRIMAS_API_STATUS.CREATED,
+        created: +new Date(),
+        extra: { report_status: 'pending' },
+      })
+    );
+    this._url = `/shares/${shareId}/reports`;
+    return this;
   }
 
   public likes(params: IContentInteractionParams, success: Callback) {
     this.createLists('likes')(params, success);
   }
 
-  public createLike(shareId: string, params: IReportInfo, callback: Callback) {
-    this.operator(params, `/shares/${shareId}/likes`, callback);
+  public createLike(shareId: string, params: IReportInfo) {
+    this._metadata = this.buildParams(
+      defaultsDeep({}, params, {
+        tag: PRIMAS_API_TAG.SHARE_LIKE,
+        status: PRIMAS_API_STATUS.CREATED,
+        created: +new Date(),
+      })
+    );
+    this._url = `/shares/${shareId}/likes`;
+    return this;
   }
 
   public cancelLike(
     shareId: string,
     likeId: string,
-    params: IContentInteractionParams,
-    success: Callback
+    params: IContentInteractionParams
   ) {
-    this.operator(
-      params,
-      `/shares/${shareId}/likes/${likeId}`,
-      success,
-      'delete'
+    this._metadata = this.buildParams(
+      defaultsDeep({}, params, {
+        tag: PRIMAS_API_TAG.SHARE_LIKE,
+        status: PRIMAS_API_STATUS.DELETED,
+        updated: +new Date(),
+      })
     );
+    this._url = `/shares/${shareId}/likes/${likeId}`;
+    this._method = 'delete';
+    return this;
   }
 
   public comments(params: IContentInteractionParams, success: Callback) {
@@ -65,40 +92,48 @@ export default class ContentInteraction extends Base<
     );
   }
 
-  public createComment(
-    shareId: string,
-    params: IContentInteractionParams,
-    success: Callback
-  ) {
-    this.operator(params, `/shares/${shareId}/comments`, success);
+  public createComment(shareId: string, params: any) {
+    if (!params.extra) {
+      throw new Error('extra content is required');
+    }
+    this._metadata = this.buildParams(
+      defaultsDeep({}, params, {
+        tag: PRIMAS_API_TAG.SHARE_COMMENT,
+        status: PRIMAS_API_STATUS.CREATED,
+        created: +new Date(),
+      })
+    );
+    this._url = `/shares/${shareId}/comments`;
+    return this;
   }
 
-  public updateComment(
-    shareId: string,
-    commentId: string,
-    params: IContentInteractionParams,
-    success: Callback
-  ) {
-    this.operator(
-      params,
-      `/shares/${shareId}/comments/${commentId}`,
-      success,
-      'put'
+  public updateComment(shareId: string, commentId: string, params: any) {
+    if (!params.extra) {
+      throw new Error('extra content is required');
+    }
+    this._metadata = this.buildParams(
+      defaultsDeep({}, params, {
+        tag: PRIMAS_API_TAG.SHARE_COMMENT,
+        status: PRIMAS_API_STATUS.UPDATED,
+        updated: +new Date(),
+      })
     );
+    this._url = `/shares/${shareId}/comments/${commentId}`;
+    this._method = 'put';
+    return this;
   }
 
-  public cancelComment(
-    shareId: string,
-    commentId: string,
-    params: IContentInteractionParams,
-    success: Callback
-  ) {
-    this.operator(
-      params,
-      `/shares/${shareId}/comments/${commentId}`,
-      success,
-      'delete'
+  public cancelComment(shareId: string, commentId: string, params: any) {
+    this._metadata = this.buildParams(
+      defaultsDeep({}, params, {
+        tag: PRIMAS_API_TAG.SHARE_COMMENT,
+        status: PRIMAS_API_STATUS.DELETED,
+        updated: +new Date(),
+      })
     );
+    this._url = `/shares/${shareId}/comments/${commentId}`;
+    this._method = 'delete';
+    return this;
   }
 
   protected getUrl(params: IContentInteractionParams) {
@@ -110,5 +145,21 @@ export default class ContentInteraction extends Base<
       url += '/comments/' + params.commentId;
     }
     return url;
+  }
+
+  protected buildParams(params: any) {
+    if (params.extra) {
+      if (this.json) {
+        params.extra.content = Buffer.from(params.extra.content).toString(
+          'base64'
+        );
+      }
+      params.extra.content_hash = bufferToHex(sha256(params.content));
+    }
+    return super.buildParams(
+      defaultsDeep({}, params, {
+        type: PRIMAS_API_TYPE.RELATION,
+      })
+    );
   }
 }
