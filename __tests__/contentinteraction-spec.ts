@@ -8,6 +8,7 @@ beforeAll(() => {
   p = new Primas({
     address,
     passphrase: password,
+    json: false
   });
 });
 

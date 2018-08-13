@@ -157,17 +157,54 @@ export abstract class Base<T extends IParams> {
   ) {
     const m = method || 'post';
     const data: any = { url };
+
+    function serialize (p:any) {
+      const f: any[] = []
+      function add (k: any, v: any) {
+        if (Array.isArray(v)) {
+          for (const val of v) {
+            add(k + '[]', val);
+          }
+        } else if (Buffer.isBuffer(v) || typeof v !== 'object') {
+          f.push({[k]: v});
+        } else if (typeof v === 'object') {
+          for (const key in v) {
+            if (v.hasOwnProperty(key)) {
+              add(`${k}[${key}]`, v[key])
+            }
+          }
+        }
+      }
+      for (const key in p) {
+        if (p.hasOwnProperty(key)) {
+          add(key, p[key])
+        }
+      }
+      return f;
+    }
+
+
     if (this.json) {
       data.body = params;
+    } else if (params.tag === PRIMAS_API_TAG.IMAGE) {
+      const formData = serialize(params);
+      const r = this.request[m](url, (err: any, res: any, body: any) => {
+        if (err) {
+          return success(err);
+        }
+        success(null, body);
+      });
+      const form = r.form();
+      formData.forEach(e => {
+        for (const k in e) {
+          if (e.hasOwnProperty(k)) {
+            form.append(k, e[k]);
+          }
+        }
+      })
+      return;
     } else {
-      switch (params.tag) {
-        case PRIMAS_API_TAG.IMAGE:
-          data.formData = params;
-          break;
-        default:
-          data.form = params;
-          break;
-      }
+      data.form = params;
     }
     this.request[m](data, (err: any, res: any, body: any) => {
       if (err) {
@@ -217,6 +254,10 @@ export abstract class Base<T extends IParams> {
   }
 
   protected abstract getUrl(params: T): string;
+
+  protected now(): number {
+    return Math.floor(+new Date() / 1000);
+  }
 
   private _sign() {
     this.sign(sign(this.beforeSign(), this.options.privateKey));

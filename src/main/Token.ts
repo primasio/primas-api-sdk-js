@@ -37,7 +37,7 @@ export class Token extends Base<ITokenParams> {
   public createIncentiveWithdrawal(accountId: string, params: IIncentive) {
     this._metadata = this.buildParams(
       defaultsDeep({}, params, {
-        created: +new Date(),
+        created: this.now(),
       })
     );
     this._url = '/accounts/' + accountId + '/tokens/incentives/withdrawal';
@@ -59,7 +59,7 @@ export class Token extends Base<ITokenParams> {
   public unPreLock(accountId: string, params: IIncentive) {
     this._metadata = this.buildParams(
       defaultsDeep({}, params, {
-        created: +new Date(),
+        created: this.now(),
       })
     );
     this._url = '/accounts/' + accountId + 'tokens/pre_locks';

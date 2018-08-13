@@ -7,6 +7,8 @@ beforeAll(() => {
   const password: string = 'wheethereum';
   p = new Primas({
     address,
+    node: 'http://localhost:9002/api',
+    passphrase: password,
     json: false,
   });
 });
@@ -30,29 +32,31 @@ describe('content test', () => {
   //     }
   //   );
   // });
-
-  // test('update content', done => {
-  //   p.Content.update(id, {
-  //     tag: "image",
-  //     title: "test",
-  //     creator: {
-  //       account_id: id
-  //     },
-  //     abstract: 'this is a test account',
-  //     language: "en",
-  //     category: ["test"],
-  //     content: fs.readFileSync("/Users/wangmengtao/Documents/logo.png"),
-  //     license: "none"
-  //   }).send((err, res) => {
-  //     if (err) {
-  //       return;
-  //     }
-  //     console.log(res);
-  //     // expect(res.data.id).not.toBeNull();
-  //     // id = res.data.id;
-  //     done();
-  //   });
-  // });
+  test('update content', done => {
+    p.Content.create({
+      tag: "image",
+      title: "test",
+      creator: {
+        account_id: id,
+        test: {
+          hellp: 11
+        }
+      },
+      abstract: 'this is a test account',
+      language: "en",
+      category: ["test", {id: 1}],
+      content: fs.readFileSync("/Users/wangmengtao/Documents/logo.png"),
+      license: "none"
+    }).send((err, res) => {
+      if (err) {
+        return;
+      }
+      console.log(res);
+      // expect(res.data.id).not.toBeNull();
+      // id = res.data.id;
+      done();
+    });
+  });
 
   // test('create content', done => {
   //   p.Content.create({
@@ -78,19 +82,19 @@ describe('content test', () => {
   //   });
   // });
 
-  test('sign outside', done => {
-    const content = p.Content.create({
-      tag: 'article',
-      title: 'test',
-      creator: {
-        account_id: id,
-      },
-      abstract: 'this is a test account',
-      language: 'en',
-      category: ['test'],
-      content: 'hello world',
-      license: 'none',
-    });
-    content.sign(sign(content.beforeSign()));
-  });
+  // test('sign outside', done => {
+  //   const content = p.Content.create({
+  //     tag: 'article',
+  //     title: 'test',
+  //     creator: {
+  //       account_id: id,
+  //     },
+  //     abstract: 'this is a test account',
+  //     language: 'en',
+  //     category: ['test'],
+  //     content: 'hello world',
+  //     license: 'none',
+  //   });
+  //   content.sign(sign(content.beforeSign()));
+  // });
 });

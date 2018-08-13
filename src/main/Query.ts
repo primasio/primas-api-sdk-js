@@ -9,6 +9,14 @@ export class Query extends Base<any> {
     this.createLists('')(params, success);
   }
 
+  public content(params: any, success: Callback) {
+    this.createLists('content')(params, success)
+  }
+
+  public reproductions(params: any, success: Callback) {
+    this.createLists('reproductions')(params, success)
+  }
+
   protected getUrl(params: any) {
     return '/query';
   }

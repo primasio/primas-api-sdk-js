@@ -11,9 +11,9 @@ beforeAll(() => {
 
 describe('account test', () => {
   const id: string =
-    '841208135430c77add1669e2e126161d64d9c79f0b5a3ce120c0ca57256db00f';
+    'd392e656a2759f0beb1fd2d56b2c710393e9c742b50001cd246a5dd12507d246';
   const dna: string =
-    '935dc498e922b92e905c2f9dbe0927e3199e3b37223211855946ae6f00574288';
+    '8b36db8da8417a6920d75758bc5936f485e52c34558977c19af239b1e46a4e31';
 
   // test('show account', done => {
   //   p.Account.metadata(
@@ -29,21 +29,21 @@ describe('account test', () => {
   //   );
   // });
 
-  test('update account', done => {
-    p.Account.update(id, {
-      parent_dna: dna,
-      name: 'node-test2',
-      abstract: 'this is a test account update',
-    }).send((err, res) => {
-      if (err) {
-        return;
-      }
-      console.log(res);
-      // expect(res.data.id).not.toBeNull();
-      // id = res.data.id;
-      done();
-    });
-  });
+  // test('update account', done => {
+  //   p.Account.update(id, {
+  //     parent_dna: dna,
+  //     name: 'node-test2',
+  //     abstract: 'this is a test account update',
+  //   }).send((err, res) => {
+  //     if (err) {
+  //       return;
+  //     }
+  //     console.log(res);
+  //     // expect(res.data.id).not.toBeNull();
+  //     // id = res.data.id;
+  //     done();
+  //   });
+  // });
 
   test('create account', done => {
     p.Account.create({

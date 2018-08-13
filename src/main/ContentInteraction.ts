@@ -35,7 +35,7 @@ export class ContentInteraction extends Base<IContentInteractionParams> {
       defaultsDeep({}, params, {
         tag: PRIMAS_API_TAG.SHARE_REPORT,
         status: PRIMAS_API_STATUS.CREATED,
-        created: +new Date(),
+        created: this.now(),
         extra: { report_status: 'pending' },
       })
     );
@@ -52,7 +52,7 @@ export class ContentInteraction extends Base<IContentInteractionParams> {
       defaultsDeep({}, params, {
         tag: PRIMAS_API_TAG.SHARE_LIKE,
         status: PRIMAS_API_STATUS.CREATED,
-        created: +new Date(),
+        created: this.now(),
       })
     );
     this._url = `/shares/${shareId}/likes`;
@@ -68,7 +68,7 @@ export class ContentInteraction extends Base<IContentInteractionParams> {
       defaultsDeep({}, params, {
         tag: PRIMAS_API_TAG.SHARE_LIKE,
         status: PRIMAS_API_STATUS.DELETED,
-        updated: +new Date(),
+        updated: this.now(),
       })
     );
     this._url = `/shares/${shareId}/likes/${likeId}`;
@@ -100,7 +100,7 @@ export class ContentInteraction extends Base<IContentInteractionParams> {
       defaultsDeep({}, params, {
         tag: PRIMAS_API_TAG.SHARE_COMMENT,
         status: PRIMAS_API_STATUS.CREATED,
-        created: +new Date(),
+        created: this.now(),
       })
     );
     this._url = `/shares/${shareId}/comments`;
@@ -115,7 +115,7 @@ export class ContentInteraction extends Base<IContentInteractionParams> {
       defaultsDeep({}, params, {
         tag: PRIMAS_API_TAG.SHARE_COMMENT,
         status: PRIMAS_API_STATUS.UPDATED,
-        updated: +new Date(),
+        updated: this.now(),
       })
     );
     this._url = `/shares/${shareId}/comments/${commentId}`;
@@ -128,7 +128,7 @@ export class ContentInteraction extends Base<IContentInteractionParams> {
       defaultsDeep({}, params, {
         tag: PRIMAS_API_TAG.SHARE_COMMENT,
         status: PRIMAS_API_STATUS.DELETED,
-        updated: +new Date(),
+        updated: this.now(),
       })
     );
     this._url = `/shares/${shareId}/comments/${commentId}`;

@@ -4,7 +4,9 @@ import { API_VERSION, config } from './config';
 import * as Main from './main';
 import { IConfig } from './main/Base';
 import { genPrivateKey, pathResolve } from './utils/util';
-
+if (process.env.NODE_ENV === 'development') {
+  require('request-debug')(request);
+}
 class Primas {
   constructor(conf: {
     node?: string;

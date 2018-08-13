@@ -3,11 +3,12 @@
   "version": "0.1.2",
   "description": "primas-sdk-nodejs",
   "license": "MIT",
-  "repository": "",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:primasio/primas-api-sdk-js.git"
+  },
   "author": {
-    "name": "",
-    "email": "",
-    "url": ""
+    "name": "darren"
   },
   "keywords": [
     "primas",
@@ -27,8 +28,8 @@
     "prepublishOnly": "npm run build",
     "prebuild": "npm run clean && npm run format && npm run lint && echo Using TypeScript && tsc --version",
     "build": "tsc --pretty",
-    "start": "NODE_DEBUG=request ts-node src/index.ts",
-    "test": "NODE_DEBUG=request jest",
+    "start": "ts-node src/index.ts",
+    "test": "jest",
     "coverage": "jest --coverage",
     "watch": "npm run build -- --watch",
     "watch:test": "jest --watch"
@@ -51,6 +52,7 @@
     "eslint-plugin-prettier": "^2.6.2",
     "jest": "^22.0.4",
     "prettier": "^1.5.2",
+    "request-debug": "^0.2.0",
     "rimraf": "^2.0.0",
     "ts-jest": "^22.0.1",
     "ts-node": "^3.2.0",

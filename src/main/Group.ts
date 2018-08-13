@@ -26,7 +26,7 @@ export class Group extends Base<IGroupParams> {
     this._metadata = this.buildParams(
       defaultsDeep({}, params, {
         status: PRIMAS_API_STATUS.CREATED,
-        created: +new Date(),
+        created: this.now(),
       })
     );
     this._url = '/groups';
@@ -37,7 +37,7 @@ export class Group extends Base<IGroupParams> {
     this._metadata = this.buildParams(
       defaultsDeep({}, params, {
         status: PRIMAS_API_STATUS.UPDATED,
-        updated: +new Date(),
+        updated: this.now(),
       })
     );
     this._url = '/groups/' + groupId;
@@ -49,7 +49,7 @@ export class Group extends Base<IGroupParams> {
     this._metadata = this.buildParams(
       defaultsDeep({}, params, {
         status: PRIMAS_API_STATUS.DELETED,
-        updated: +new Date(),
+        updated: this.now(),
       })
     );
     this._url = '/groups/' + groupId;
@@ -67,7 +67,7 @@ export class Group extends Base<IGroupParams> {
         tag: PRIMAS_API_TAG.GROUP_MEMBER,
         type: PRIMAS_API_TYPE.RELATION,
         status: PRIMAS_API_STATUS.CREATED,
-        created: +new Date(),
+        created: this.now(),
       })
     );
     this._url = '/groups/' + groupId + '/members';
@@ -80,7 +80,7 @@ export class Group extends Base<IGroupParams> {
         tag: PRIMAS_API_TAG.GROUP_MEMBER,
         type: PRIMAS_API_TYPE.RELATION,
         status: PRIMAS_API_STATUS.UPDATED,
-        updated: +new Date(),
+        updated: this.now(),
       })
     );
     this._url = '/groups/' + groupId + '/members/' + groupMemberId;
@@ -94,7 +94,7 @@ export class Group extends Base<IGroupParams> {
         tag: PRIMAS_API_TAG.GROUP_MEMBER,
         type: PRIMAS_API_TYPE.RELATION,
         status: PRIMAS_API_STATUS.DELETED,
-        updated: +new Date(),
+        updated: this.now(),
       })
     );
     this._url = '/groups/' + groupId + '/members/' + groupMemberId;
@@ -112,7 +112,7 @@ export class Group extends Base<IGroupParams> {
         tag: PRIMAS_API_TAG.GROUP_MEMBER_WHITELIST,
         type: PRIMAS_API_TYPE.RELATION,
         status: PRIMAS_API_STATUS.CREATED,
-        created: +new Date(),
+        created: this.now(),
         extra: { application_status: 'pending' },
       })
     );
@@ -130,7 +130,7 @@ export class Group extends Base<IGroupParams> {
         tag: PRIMAS_API_TAG.GROUP_MEMBER_WHITELIST,
         type: PRIMAS_API_TYPE.RELATION,
         status: PRIMAS_API_STATUS.UPDATED,
-        updated: +new Date(),
+        updated: this.now(),
       })
     );
     this._url = '/groups/' + groupId + '/members/whitelist/' + whitelistId;
@@ -144,7 +144,7 @@ export class Group extends Base<IGroupParams> {
         tag: PRIMAS_API_TAG.GROUP_MEMBER_WHITELIST,
         type: PRIMAS_API_TYPE.RELATION,
         status: PRIMAS_API_STATUS.DELETED,
-        updated: +new Date(),
+        updated: this.now(),
       })
     );
     this._url = '/groups/' + groupId + '/members/whitelist/' + whitelistId;
@@ -162,7 +162,7 @@ export class Group extends Base<IGroupParams> {
         tag: PRIMAS_API_TAG.GROUP_SHARE,
         type: PRIMAS_API_TYPE.RELATION,
         status: PRIMAS_API_STATUS.CREATED,
-        updated: +new Date(),
+        updated: this.now(),
       })
     );
     this._url = '/groups/' + groupId + '/shares';
@@ -175,7 +175,7 @@ export class Group extends Base<IGroupParams> {
         tag: PRIMAS_API_TAG.GROUP_SHARE,
         type: PRIMAS_API_TYPE.RELATION,
         status: PRIMAS_API_STATUS.UPDATED,
-        updated: +new Date(),
+        updated: this.now(),
       })
     );
     this._url = '/shares/' + shareId;
@@ -189,7 +189,7 @@ export class Group extends Base<IGroupParams> {
         tag: PRIMAS_API_TAG.GROUP_SHARE,
         type: PRIMAS_API_TYPE.RELATION,
         status: PRIMAS_API_STATUS.DELETED,
-        updated: +new Date(),
+        updated: this.now(),
       })
     );
     this._url = '/shares/' + shareId;

@@ -23,7 +23,7 @@ export class Account extends Base<IAccountParams> {
     this._metadata = this.buildParams(
       defaultsDeep({}, params, {
         status: PRIMAS_API_STATUS.CREATED,
-        created: +new Date(),
+        created: this.now(),
       })
     );
     this._url = '/accounts';
@@ -39,7 +39,7 @@ export class Account extends Base<IAccountParams> {
     this._metadata = this.buildParams(
       defaultsDeep({}, params, {
         status: PRIMAS_API_STATUS.UPDATED,
-        updated: +new Date(),
+        updated: this.now(),
       })
     );
     this._url = '/accounts/' + accountId;
