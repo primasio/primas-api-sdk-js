@@ -15,6 +15,7 @@ Node.js >= 8.0.0 required.
 # Prerequisite
 
 You should have keystore in your workspace. As an alternative, you can provide the keystore option in the constructor config.
+All numbers are treated as big number, you should use [bignumber.js](http://mikemcl.github.io/bignumber.js/#toJSON) to deal with it.
 
 # Summary
 

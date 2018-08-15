@@ -1,4 +1,4 @@
-import { bufferToHex, sha256 } from 'ethereumjs-util';
+import { bufferToHex, keccak256, unpad } from 'ethereumjs-util';
 import defaultsDeep = require('lodash/defaultsDeep');
 import {
   Base,
@@ -55,10 +55,7 @@ export class Content extends Base<IContentParams> {
   }
 
   protected buildParams(params: any) {
-    if (this.json) {
-      params.content = Buffer.from(params.content).toString('base64');
-    }
-    params.content_hash = bufferToHex(sha256(params.content));
+    params.content_hash = unpad(bufferToHex(keccak256(params.content)));
     return super.buildParams(
       defaultsDeep({}, params, {
         type: PRIMAS_API_TYPE.OBJECT,

@@ -36,23 +36,28 @@
   },
   "dependencies": {
     "bignumber.js": "^7.2.1",
+    "chalk": "^2.4.1",
     "ethereumjs-util": "^5.2.0",
     "keythereum": "^1.0.4",
     "lodash": "^4.17.10",
-    "request": "^2.87.0"
+    "loglevel": "^1.6.1",
+    "loglevel-plugin-prefix": "^0.8.4",
+    "request": "^2.87.0",
+    "request-debug": "^0.2.0",
+    "supports-color": "^5.4.0"
   },
   "devDependencies": {
     "@types/bignumber.js": "^5.0.0",
     "@types/jest": "^22.0.1",
     "@types/lodash": "^4.14.116",
+    "@types/loglevel": "^1.5.3",
     "@types/node": "^8.0.0",
     "@types/underscore": "^1.8.8",
     "@types/web3": "^1.0.1",
-    "coveralls": "^2.0.0",
+    "coveralls": "^3.0.2",
     "eslint-plugin-prettier": "^2.6.2",
     "jest": "^22.0.4",
     "prettier": "^1.5.2",
-    "request-debug": "^0.2.0",
     "rimraf": "^2.0.0",
     "ts-jest": "^22.0.1",
     "ts-node": "^3.2.0",
@@ -67,11 +72,12 @@
     "transform": {
       ".(ts)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|js)$",
+    "testRegex": "(/__tests__/.*\\.(test|spec))\\.(ts|js)$",
     "moduleFileExtensions": [
       "ts",
       "js"
     ],
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "verbose": true
   }
 }

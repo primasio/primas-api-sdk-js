@@ -1,5 +1,7 @@
 import * as fs from 'fs';
 import Primas = require('../src');
+import { createLogger } from '../src/utils/logger';
+const logger = createLogger('content-interaction-test');
 import { sign } from '../src/utils/util';
 let p: any;
 beforeAll(() => {
@@ -8,7 +10,7 @@ beforeAll(() => {
   p = new Primas({
     address,
     passphrase: password,
-    json: false
+    json: false,
   });
 });
 
@@ -30,10 +32,10 @@ describe('content test', () => {
     });
     content.send((err, res) => {
       if (err) {
-        console.log(err);
+        logger.error(err);
         return;
       }
-      console.log(res);
+      logger.debug(res);
       // expect(res.data.id).not.toBeNull();
       // id = res.data.id;
       done();
@@ -51,10 +53,10 @@ describe('content test', () => {
     });
     content.send((err, res) => {
       if (err) {
-        console.log(err);
+        logger.error(err);
         return;
       }
-      console.log(res);
+      logger.debug(res);
       // expect(res.data.id).not.toBeNull();
       // id = res.data.id;
       done();

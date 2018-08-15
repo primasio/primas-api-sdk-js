@@ -4,7 +4,7 @@ import { API_VERSION, config } from './config';
 import * as Main from './main';
 import { IConfig } from './main/Base';
 import { genPrivateKey, pathResolve } from './utils/util';
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'staging') {
   require('request-debug')(request);
 }
 class Primas {
@@ -22,10 +22,15 @@ class Primas {
     if (!myConf.address) {
       throw new Error('address is required');
     }
-    baseRequest = request.defaults({
+    const defaultConfig: any = {
       baseUrl: pathResolve(myConf.node, API_VERSION),
-      json: myConf.json,
-    });
+    };
+    if (myConf.json) {
+      defaultConfig.headers = {
+        'content-type': 'application/json',
+      };
+    }
+    baseRequest = request.defaults(defaultConfig);
     if (myConf.passphrase) {
       const privateKey = genPrivateKey(
         myConf.address,

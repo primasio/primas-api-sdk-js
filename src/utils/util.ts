@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import {
   addHexPrefix,
   bufferToHex,
@@ -119,38 +120,39 @@ export function sort(obj: any) {
   return {};
 }
 
-export const toJSON = (obj: any) => {
-  let ret = '{';
-  function recur(o: any) {
-    for (const k in o) {
-      if (o.hasOwnProperty(k)) {
-        ret += `"${k}":`;
-        if (Array.isArray(o[k])) {
-          ret += '[';
-          o[k].forEach((e: any) => {
-            recur(e);
-          });
-          ret = ret.replace(/,$/, '],');
-        } else if (
-          typeof o[k] === 'object' &&
-          !isBN(o[k]) &&
-          !isBigNumber(o[k])
-        ) {
-          ret += '{';
-          recur(o[k]);
-          ret = ret.replace(/,$/, '},');
-        } else if (typeof o[k] === 'string') {
-          ret += '"' + o[k].toString() + '",';
-        } else {
-          ret += o[k].toString() + ',';
-        }
-      }
-    }
-  }
-  recur(obj);
-  ret = ret.replace(/,$/, '}');
-  return ret;
-};
+// BigNumber.config({ EXPONENTIAL_AT: [-1e9, 1e9] });
+// export const toJSON = (obj: any) => {
+//   let ret = '{';
+//   function recur(o: any) {
+//     for (const k in o) {
+//       if (o.hasOwnProperty(k)) {
+//         ret += `"${k}":`;
+//         if (Array.isArray(o[k])) {
+//           ret += '[';
+//           o[k].forEach((e: any) => {
+//             recur(e);
+//           });
+//           ret = ret.replace(/,$/, '],');
+//         } else if (
+//           typeof o[k] === 'object' &&
+//           !isBN(o[k]) &&
+//           !isBigNumber(o[k])
+//         ) {
+//           ret += '{';
+//           recur(o[k]);
+//           ret = ret.replace(/,$/, '},');
+//         } else if (typeof o[k] === 'string') {
+//           ret += '"' + o[k].toString() + '",';
+//         } else {
+//           ret += o[k].toString() + ',';
+//         }
+//       }
+//     }
+//   }
+//   recur(obj);
+//   ret = ret.replace(/,$/, '}');
+//   return ret;
+// };
 
 export function pathResolve(...args: string[]) {
   let prefix = '';

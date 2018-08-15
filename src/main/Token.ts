@@ -12,14 +12,7 @@ export class Token extends Base<ITokenParams> {
    * @param success
    */
   public tokens(params: ITokenParams, success: Callback) {
-    let url = this.getUrl(params);
-    url += '/tokens';
-    this.request.get(url, (err: any, res: any, body: any) => {
-      if (err) {
-        return success(err);
-      }
-      success(null, body);
-    });
+    this.createLists('tokens')(params, success);
   }
 
   public incentives(params: ITokenParams, success: Callback) {

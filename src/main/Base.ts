@@ -1,5 +1,6 @@
 import defaultsDeep = require('lodash/defaultsDeep');
-import { sign, sort, toJSON } from '../utils/util';
+import JSON from '../utils/JSONBigNumber';
+import { sign, sort } from '../utils/util';
 
 /**
  * basic types
@@ -117,6 +118,14 @@ export interface IGroupParams extends IParams {
   groupId: string;
 }
 
+function toBase64(data: string | Buffer) {
+  let buf: Buffer = data as Buffer;
+  if (typeof data === 'string') {
+    buf = Buffer.from(data);
+  }
+  return buf.toString('base64');
+}
+
 /**
  * Base Class
  */
@@ -131,6 +140,12 @@ export abstract class Base<T extends IParams> {
   ) {}
 
   public send(callback: Callback) {
+    if (
+      (this.json || this._metadata.tag === 'article') &&
+      this._metadata.content
+    ) {
+      this._metadata.content = toBase64(this._metadata.content);
+    }
     if (this.options && this.options.privateKey) {
       this._sign();
     }
@@ -142,7 +157,14 @@ export abstract class Base<T extends IParams> {
   }
 
   public beforeSign() {
-    return toJSON(sort(this._metadata));
+    if (this._metadata.content) {
+      const content = this._metadata.content;
+      delete this._metadata.content;
+      const ret = JSON.stringify(sort(this._metadata));
+      this._metadata.content = content;
+      return ret;
+    }
+    return JSON.stringify(sort(this._metadata));
   }
 
   public sign(signature: string) {
@@ -158,57 +180,62 @@ export abstract class Base<T extends IParams> {
     const m = method || 'post';
     const data: any = { url };
 
-    function serialize (p:any) {
-      const f: any[] = []
-      function add (k: any, v: any) {
-        if (Array.isArray(v)) {
-          for (const val of v) {
-            add(k + '[]', val);
-          }
-        } else if (Buffer.isBuffer(v) || typeof v !== 'object') {
-          f.push({[k]: v});
-        } else if (typeof v === 'object') {
-          for (const key in v) {
-            if (v.hasOwnProperty(key)) {
-              add(`${k}[${key}]`, v[key])
-            }
-          }
-        }
-      }
+    function serialize(p: any) {
+      const f: any = {};
+      // function add(k: any, v: any) {
+      //   if (Array.isArray(v)) {
+      //     for (const val of v) {
+      //       add(k + '[]', val);
+      //     }
+      //   } else if (Buffer.isBuffer(v) || typeof v !== 'object') {
+      //     f.push({ [k]: v });
+      //   } else if (typeof v === 'object') {
+      //     for (const key in v) {
+      //       if (v.hasOwnProperty(key)) {
+      //         add(`${k}[${key}]`, v[key]);
+      //       }
+      //     }
+      //   }
+      // }
       for (const key in p) {
         if (p.hasOwnProperty(key)) {
-          add(key, p[key])
+          f[key] =
+            typeof p[key] === 'object' && !Buffer.isBuffer(p[key])
+              ? JSON.stringify(p[key])
+              : p[key];
         }
       }
       return f;
     }
-
-
     if (this.json) {
-      data.body = params;
+      data.body = JSON.stringify(params);
     } else if (params.tag === PRIMAS_API_TAG.IMAGE) {
-      const formData = serialize(params);
-      const r = this.request[m](url, (err: any, res: any, body: any) => {
-        if (err) {
-          return success(err);
-        }
-        success(null, body);
-      });
-      const form = r.form();
-      formData.forEach(e => {
-        for (const k in e) {
-          if (e.hasOwnProperty(k)) {
-            form.append(k, e[k]);
-          }
-        }
-      })
-      return;
+      // const formData = serialize(params);
+      data.formData = serialize(params);
+      // const r = this.request[m](url, (err: any, res: any, body: any) => {
+      //   if (err) {
+      //     return success(err);
+      //   }
+      //   success(null, body);
+      // });
+      // const form = r.form();
+      // formData.forEach(e => {
+      //   for (const k in e) {
+      //     if (e.hasOwnProperty(k)) {
+      //       form.append(k, e[k]);
+      //     }
+      //   }
+      // });
+      // return;
     } else {
-      data.form = params;
+      data.form = serialize(params);
     }
     this.request[m](data, (err: any, res: any, body: any) => {
       if (err) {
         return success(err);
+      }
+      if (/application\/json/.test(res.headers['content-type'])) {
+        body = JSON.parse(body);
       }
       success(null, body);
     });
@@ -236,6 +263,9 @@ export abstract class Base<T extends IParams> {
         (err: any, res: any, body: any) => {
           if (err) {
             return success(err);
+          }
+          if (/application\/json/.test(res.headers['content-type'])) {
+            body = JSON.parse(body);
           }
           success(null, body);
         }
