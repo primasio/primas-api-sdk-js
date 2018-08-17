@@ -192,8 +192,8 @@ describe('content interaction test', () => {
 
   test('Delete the comment of a group share', done => {
     const content = p.ContentInteraction.cancelComment(conf.accountId, '123', {
-      parent_dna: "24443",
-      creator: { account_id: '3' }
+      parent_dna: '24443',
+      creator: { account_id: '3' },
     });
     content.send((err, res) => {
       if (err) {

@@ -6,6 +6,7 @@
     "lib": [
       "esnext"
     ],
+    "noImplicitAny": false,
     "target": "es5",
     "strict": true,
     "outDir": "./lib",

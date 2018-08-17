@@ -8,6 +8,8 @@
     "object-literal-sort-keys": false,
     "no-submodule-imports": false,
     "variable-name": false,
-    "no-var-requires": false
+    "no-var-requires": false,
+    "no-shadowed-variable": false,
+    "only-arrow-functions": false
   }
 }

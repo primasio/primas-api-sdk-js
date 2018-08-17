@@ -7,15 +7,18 @@ const env: string =
   (process.env.NODE_ENV !== 'test' && process.env.NODE_ENV) || 'development';
 const conf = config[env];
 const ks = `{"version":3,"id":"e1a1909a-7a38-44aa-af04-61cd3a342008","address":"d75407ad8cabeeebfed78c4f3794208b3339fbf4","Crypto":{"ciphertext":"bcf8d3037432f731d3dbb0fde1b32be47faa202936c303ece7f53890a79f49d2","cipherparams":{"iv":"e28edaeff90032f24481c6117e593e01"},"cipher":"aes-128-ctr","kdf":"scrypt","kdfparams":{"dklen":32,"salt":"7d7c824367d7f6607128c721d6e1729abf706a3165384bbfc2aae80510ec0ce2","n":1024,"r":8,"p":1},"mac":"52f98caaa4959448ec612e4314146b6a2d5022d5394b77e31f5a79780079c22f"}}`;
-const address = "32fc4139f7d0347ca9ea70d30caad45a5d90fc23aaefacedf6bff2746e2073f3";
-const groupId = "0e558892155f550f4fc375512dd9f1eaf01dee6b2ab2e3644ddf9ddce9aed530";
-const groupDna = "95c2887cfb181713fcdeffb3941bbbaa27242818ecf537f05a857c09976e4703";
+const address =
+  '32fc4139f7d0347ca9ea70d30caad45a5d90fc23aaefacedf6bff2746e2073f3';
+const groupId =
+  '0e558892155f550f4fc375512dd9f1eaf01dee6b2ab2e3644ddf9ddce9aed530';
+const groupDna =
+  '95c2887cfb181713fcdeffb3941bbbaa27242818ecf537f05a857c09976e4703';
 describe('group test', () => {
   const p: any = new Primas({
     address,
-    passphrase: "Test123:::",
+    passphrase: 'Test123:::',
     node: conf.node,
-    keystore: ks
+    keystore: ks,
   });
 
   test('show group metadata', done => {
@@ -297,7 +300,8 @@ describe('group test', () => {
   test('Get group avatar raw image', done => {
     p.Group.avatarImg(
       {
-        groupId: "0e558892155f550f4fc375512dd9f1eaf01dee6b2ab2e3644ddf9ddce9aed530",
+        groupId:
+          '0e558892155f550f4fc375512dd9f1eaf01dee6b2ab2e3644ddf9ddce9aed530',
       },
       (err, res) => {
         expect(err).toBeNull();
@@ -305,4 +309,4 @@ describe('group test', () => {
       }
     );
   });
-})
+});

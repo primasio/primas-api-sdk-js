@@ -73,17 +73,14 @@ export class Content extends Base<IContentParams> {
           if (err) {
             return success(err);
           }
-          if (url.indexOf('bip2018032523372') > 0) {
-            res.data = {id : '123'}
-          }
           if (res.data) {
             ret[index] = {
               origin: tag,
               now: tag.replace(
                 url + '"',
                 `${url}" data-dtcp-id="${res.data.id}"`
-              )
-            }
+              ),
+            };
           }
           if (complete === total) {
             if (Object.keys(ret).length > 0) {
@@ -102,18 +99,18 @@ export class Content extends Base<IContentParams> {
       let lastIndex = 0;
       const keys = Object.keys(obj).sort((a, b) => {
         if (parseInt(a, 10) < parseInt(b, 10)) {
-          return -1
+          return -1;
         } else if (parseInt(a, 10) === parseInt(b, 10)) {
-          return 0
+          return 0;
         } else {
-          return 1
+          return 1;
         }
       });
       keys.forEach(e => {
         fragments.push(htm.slice(lastIndex, parseInt(e, 10)));
         lastIndex = parseInt(e, 10) + obj[e].origin.length;
         fragments.push(obj[e].now);
-      })
+      });
       fragments.push(htm.slice(lastIndex));
       return fragments.join('');
     }
