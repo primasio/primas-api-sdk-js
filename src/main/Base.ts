@@ -18,7 +18,7 @@ export enum PRIMAS_API_TAG {
   IMAGE = 'image',
   SHARE_LIKE = 'share_like',
   SHARE_COMMENT = 'share_comment',
-  GROUP = 'groups',
+  GROUP = 'group',
   GROUP_MEMBER = 'group_member',
   GROUP_MEMBER_WHITELIST = 'group_member_whitelist',
   GROUP_SHARE = 'group_share',
@@ -156,7 +156,7 @@ export abstract class Base<T extends IParams> {
     this._method = '';
   }
 
-  public beforeSign() {
+  public getRawMetadata() {
     if (this._metadata.content) {
       const content = this._metadata.content;
       delete this._metadata.content;
@@ -167,7 +167,7 @@ export abstract class Base<T extends IParams> {
     return JSON.stringify(sort(this._metadata));
   }
 
-  public sign(signature: string) {
+  public setSignature(signature: string) {
     this._metadata.signature = signature;
   }
 
@@ -290,6 +290,6 @@ export abstract class Base<T extends IParams> {
   }
 
   private _sign() {
-    this.sign(sign(this.beforeSign(), this.options.privateKey));
+    this.setSignature(sign(this.getRawMetadata(), this.options.privateKey));
   }
 }

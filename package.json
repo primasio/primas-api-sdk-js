@@ -77,7 +77,6 @@
       "ts",
       "js"
     ],
-    "testEnvironment": "node",
-    "verbose": true
+    "testEnvironment": "node"
   }
 }

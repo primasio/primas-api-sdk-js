@@ -103,7 +103,7 @@ export class Group extends Base<IGroupParams> {
   }
 
   public whitelist(params: IGroupParams, success: Callback) {
-    this.createLists('members/whitelist')(params, success);
+    this.createLists('whitelist/members')(params, success);
   }
 
   public createWhitelist(groupId: string, params: any) {
@@ -116,7 +116,7 @@ export class Group extends Base<IGroupParams> {
         extra: { application_status: 'pending' },
       })
     );
-    this._url = '/groups/' + groupId;
+    this._url = '/groups/' + groupId + '/whitelist/members';
     return this;
   }
 
@@ -133,7 +133,7 @@ export class Group extends Base<IGroupParams> {
         updated: this.now(),
       })
     );
-    this._url = '/groups/' + groupId + '/members/whitelist/' + whitelistId;
+    this._url = '/groups/' + groupId + '/whitelist/members/' + whitelistId;
     this._method = 'put';
     return this;
   }
@@ -147,7 +147,7 @@ export class Group extends Base<IGroupParams> {
         updated: this.now(),
       })
     );
-    this._url = '/groups/' + groupId + '/members/whitelist/' + whitelistId;
+    this._url = '/groups/' + groupId + '/whitelist/members/' + whitelistId;
     this._method = 'delete';
     return this;
   }
@@ -162,7 +162,7 @@ export class Group extends Base<IGroupParams> {
         tag: PRIMAS_API_TAG.GROUP_SHARE,
         type: PRIMAS_API_TYPE.RELATION,
         status: PRIMAS_API_STATUS.CREATED,
-        updated: this.now(),
+        created: this.now(),
       })
     );
     this._url = '/groups/' + groupId + '/shares';

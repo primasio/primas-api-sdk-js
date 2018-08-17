@@ -1,7 +1,8 @@
 import Primas = require('../src');
 import { log } from '../src/utils/logger';
 import config from './config';
-const env: string = (process.env.NODE_ENV !== 'test' && process.env.NODE_ENV) || 'development';
+const env: string =
+  (process.env.NODE_ENV !== 'test' && process.env.NODE_ENV) || 'development';
 const conf = config[env];
 
 describe('account test', () => {
@@ -56,70 +57,81 @@ describe('account test', () => {
   });
 
   test('account credits', done => {
-    p.Account.credits({
-      accountId: conf.accountId,
-    }, (err, res) => {
-      if (err) {
-        log.error(err);
-        return;
+    p.Account.credits(
+      {
+        accountId: conf.accountId,
+      },
+      (err, res) => {
+        if (err) {
+          log.error(err);
+          return;
+        }
+        expect(res.result_code).toBe(0);
+        expect(res.data.user_account_id).toBe(conf.accountId);
+        done();
       }
-      expect(res.result_code).toBe(0);
-      expect(res.data.user_account_id).toBe(conf.accountId);
-      done();
-    });
+    );
   });
 
   test('account contents', done => {
-    p.Account.contents({
-      accountId: conf.accountId,
-      qs: {
-        page: 0,
-        page_size: 10
+    p.Account.contents(
+      {
+        accountId: conf.accountId,
+        qs: {
+          page: 0,
+          page_size: 10,
+        },
+      },
+      (err, res) => {
+        if (err) {
+          log.error(err);
+          return;
+        }
+        expect(res.result_code).toBe(0);
+        expect(res.data.user_account_id).toBe(conf.accountId);
+        done();
       }
-    }, (err, res) => {
-      if (err) {
-        log.error(err);
-        return;
-      }
-      expect(res.result_code).toBe(0);
-      expect(res.data.user_account_id).toBe(conf.accountId);
-      done();
-    });
+    );
   });
 
   test('account groups', done => {
-    p.Account.groups({
-      accountId: conf.accountId,
-      qs: {
-        page: 0,
-        page_size: 10
+    p.Account.groups(
+      {
+        accountId: conf.accountId,
+        qs: {
+          page: 0,
+          page_size: 10,
+        },
+      },
+      (err, res) => {
+        if (err) {
+          log.error(err);
+          return;
+        }
+        expect(res.result_code).toBe(0);
+        done();
       }
-    }, (err, res) => {
-      if (err) {
-        log.error(err);
-        return;
-      }
-      expect(res.result_code).toBe(0);
-      done();
-    });
+    );
   });
 
   test('account shares', done => {
-    p.Account.shares({
-      accountId: conf.accountId,
-      qs: {
-        page: 0,
-        page_size: 10
+    p.Account.shares(
+      {
+        accountId: conf.accountId,
+        qs: {
+          page: 0,
+          page_size: 10,
+        },
+      },
+      (err, res) => {
+        if (err) {
+          log.error(err);
+          return;
+        }
+        log.debug(res);
+        expect(res.result_code).toBe(0);
+        done();
       }
-    }, (err, res) => {
-      if (err) {
-        log.error(err);
-        return;
-      }
-      log.debug(res);
-      expect(res.result_code).toBe(0);
-      done();
-    });
+    );
   });
-
 });

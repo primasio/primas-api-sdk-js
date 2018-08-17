@@ -44,7 +44,7 @@ export class Token extends Base<ITokenParams> {
   public createPreLock(accountId: string, params: any, success: Callback) {
     this.operator(
       params,
-      '/accounts/' + accountId + 'tokens/pre_locks',
+      '/accounts/' + accountId + '/tokens/pre_locks',
       success
     );
   }
@@ -55,7 +55,7 @@ export class Token extends Base<ITokenParams> {
         created: this.now(),
       })
     );
-    this._url = '/accounts/' + accountId + 'tokens/pre_locks';
+    this._url = '/accounts/' + accountId + '/tokens/pre_locks';
     this._method = 'delete';
     return this;
   }

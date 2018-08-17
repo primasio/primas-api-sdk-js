@@ -1,4 +1,4 @@
-import { bufferToHex, sha256 } from 'ethereumjs-util';
+import { bufferToHex, keccak256, unpad } from 'ethereumjs-util';
 import defaultsDeep = require('lodash/defaultsDeep');
 import {
   Base,
@@ -82,7 +82,7 @@ export class ContentInteraction extends Base<IContentInteractionParams> {
 
   public replys(params: IContentInteractionParams, success: Callback) {
     this.request.get(
-      this.getParams(`/comments/${params.commentId}/comments`, params),
+      this.getParams(`/comments/${params.commentId}/reply`, params),
       (err: any, res: any, body: any) => {
         if (err) {
           return success(err);
@@ -149,12 +149,9 @@ export class ContentInteraction extends Base<IContentInteractionParams> {
 
   protected buildParams(params: any) {
     if (params.extra) {
-      if (this.json) {
-        params.extra.content = Buffer.from(params.extra.content).toString(
-          'base64'
-        );
-      }
-      params.extra.content_hash = bufferToHex(sha256(params.content));
+      params.extra.content_hash = unpad(
+        bufferToHex(keccak256(params.extra.content))
+      );
     }
     return super.buildParams(
       defaultsDeep({}, params, {
