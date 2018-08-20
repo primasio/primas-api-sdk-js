@@ -50,70 +50,11 @@ export class Content extends Base<IContentParams> {
   }
 
   public upgradeDTCPLinks(html: string, success: Callback) {
-    const re = /<img\s+src="([a-z0-9_:\/\.]*)"\s+\/>/gi;
-    let found = re.exec(html);
-    let total = 0;
-    let complete = 0;
-
-    const ret: any = {};
-    while (found !== null) {
-      total++;
-      const tag = found[0];
-      const url = found[1];
-      // tslint:disable-next-line:radix
-      const index = found.index;
-      (this as any).$root.Query.content(
-        {
-          qs: {
-            url: encodeURI(url),
-          },
-        },
-        (err: any, res: any) => {
-          complete++;
-          if (err) {
-            return success(err);
-          }
-          if (res.data) {
-            ret[index] = {
-              origin: tag,
-              now: tag.replace(
-                url + '"',
-                `${url}" data-dtcp-id="${res.data.id}"`
-              ),
-            };
-          }
-          if (complete === total) {
-            if (Object.keys(ret).length > 0) {
-              success(err, parse(html, ret));
-            } else {
-              success(err, html);
-            }
-          }
-        }
-      );
-      found = re.exec(html);
-    }
-
-    function parse(htm: string, obj: any) {
-      const fragments: any[] = [];
-      let lastIndex = 0;
-      const keys = Object.keys(obj).sort((a, b) => {
-        if (parseInt(a, 10) < parseInt(b, 10)) {
-          return -1;
-        } else if (parseInt(a, 10) === parseInt(b, 10)) {
-          return 0;
-        } else {
-          return 1;
-        }
+    this._analysisImg(html).then(data => {
+      this._analysisLink(data).then(data => {
+        success(null, data);
       });
-      keys.forEach(e => {
-        fragments.push(htm.slice(lastIndex, parseInt(e, 10)));
-        lastIndex = parseInt(e, 10) + obj[e].origin.length;
-        fragments.push(obj[e].now);
-      });
-      fragments.push(htm.slice(lastIndex));
-      return fragments.join('');
-    }
+    });
   }
 
   protected getUrl(params: IContentParams) {
@@ -128,5 +69,90 @@ export class Content extends Base<IContentParams> {
         type: PRIMAS_API_TYPE.OBJECT,
       })
     );
+  }
+
+  private _analysisImg(html) {
+    return this._analysis(
+      html,
+      /<img\s+src="([a-z0-9_:\/\.]*)"\s+\/?>/gi,
+      (this as any).$root.Query.content
+    );
+  }
+
+  private _analysisLink(this: Content, html) {
+    return this._analysis(
+      html,
+      /<a\s+href="([a-z0-9_:\/\.]*)"\s+\/?>/gi,
+      (this as any).$root.Query.reproductions
+    );
+  }
+
+  private _analysis(html, regex, fn) {
+    let found = regex.exec(html);
+    const ret: any = {};
+    const imgPromises: any[] = [];
+    while (found !== null) {
+      const tag = found[0];
+      const url = found[1];
+      // tslint:disable-next-line:radix
+      const index = found.index;
+      const p = new Promise((resolve, reject) => {
+        fn.bind(this)(
+          {
+            qs: {
+              url: encodeURI(url),
+            },
+          },
+          (err: any, res: any) => {
+            res = {
+              data: {
+                id: '123',
+              },
+            };
+            if (res.data) {
+              ret[index] = {
+                origin: tag,
+                now: tag.replace(
+                  url + '"',
+                  `${url}" data-dtcp-id="${res.data.id}"`
+                ),
+              };
+            }
+            resolve();
+          }
+        );
+      });
+      imgPromises.push(p);
+
+      found = regex.exec(html);
+    }
+    return Promise.all(imgPromises).then(() => {
+      if (Object.keys(ret).length > 0) {
+        return this._parse(html, ret);
+      } else {
+        return html;
+      }
+    });
+  }
+
+  private _parse(htm: string, obj: any) {
+    const fragments: any[] = [];
+    let lastIndex = 0;
+    const keys = Object.keys(obj).sort((a, b) => {
+      if (parseInt(a, 10) < parseInt(b, 10)) {
+        return -1;
+      } else if (parseInt(a, 10) === parseInt(b, 10)) {
+        return 0;
+      } else {
+        return 1;
+      }
+    });
+    keys.forEach(e => {
+      fragments.push(htm.slice(lastIndex, parseInt(e, 10)));
+      lastIndex = parseInt(e, 10) + obj[e].origin.length;
+      fragments.push(obj[e].now);
+    });
+    fragments.push(htm.slice(lastIndex));
+    return fragments.join('');
   }
 }

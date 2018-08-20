@@ -183,7 +183,7 @@ export class Group extends Base<IGroupParams> {
     return this;
   }
 
-  public cancelShare(shareId: string, params: any, callback: Callback) {
+  public cancelShare(shareId: string, params: any) {
     this._metadata = this.buildParams(
       defaultsDeep({}, params, {
         tag: PRIMAS_API_TAG.GROUP_SHARE,

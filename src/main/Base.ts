@@ -182,21 +182,6 @@ export abstract class Base<T extends IParams> {
 
     function serialize(p: any) {
       const f: any = {};
-      // function add(k: any, v: any) {
-      //   if (Array.isArray(v)) {
-      //     for (const val of v) {
-      //       add(k + '[]', val);
-      //     }
-      //   } else if (Buffer.isBuffer(v) || typeof v !== 'object') {
-      //     f.push({ [k]: v });
-      //   } else if (typeof v === 'object') {
-      //     for (const key in v) {
-      //       if (v.hasOwnProperty(key)) {
-      //         add(`${k}[${key}]`, v[key]);
-      //       }
-      //     }
-      //   }
-      // }
       for (const key in p) {
         if (p.hasOwnProperty(key)) {
           f[key] =
@@ -210,23 +195,7 @@ export abstract class Base<T extends IParams> {
     if (this.json) {
       data.body = JSON.stringify(params);
     } else if (params.tag === PRIMAS_API_TAG.IMAGE) {
-      // const formData = serialize(params);
       data.formData = serialize(params);
-      // const r = this.request[m](url, (err: any, res: any, body: any) => {
-      //   if (err) {
-      //     return success(err);
-      //   }
-      //   success(null, body);
-      // });
-      // const form = r.form();
-      // formData.forEach(e => {
-      //   for (const k in e) {
-      //     if (e.hasOwnProperty(k)) {
-      //       form.append(k, e[k]);
-      //     }
-      //   }
-      // });
-      // return;
     } else {
       data.form = serialize(params);
     }

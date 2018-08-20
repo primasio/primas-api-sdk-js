@@ -124,6 +124,21 @@ export class Account extends Base<IAccountParams> {
     this.createLists('avatar/raw')(params, success);
   }
 
+  public addressMetadata(address: string, success: Callback) {
+    this.request.get(
+      { url: `/main/accounts/${address}/metadata` },
+      (err: any, res: any, body: any) => {
+        if (err) {
+          return success(err);
+        }
+        if (/application\/json/.test(res.headers['content-type'])) {
+          body = JSON.parse(body);
+        }
+        success(null, body);
+      }
+    );
+  }
+
   protected getUrl(params: IAccountParams) {
     let url = '/accounts/' + params.accountId;
     if (params.subAccountId) {
