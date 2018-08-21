@@ -96,6 +96,14 @@ All numbers are treated as big number, you should use [bignumber.js](http://mike
         - [.cancelShare(shareId, params)](#cancelshareshareid-params)
         - [.avatar(params, callback)](#avatarparams-callback-1)
         - [.avatarImg(params, callback)](#avatarimgparams-callback-1)
+    - [Node](#node)
+        - [.nodes(params, callback)](#nodesparams-callback)
+    - [Query](#query)
+        - [.query(params, callback)](#queryparams-callback)
+    - [System](#system)
+        - [.system(callback)](#systemcallback)
+    - [Timeline](#timeline)
+        - [.timeline(params, callback)](#timelineparams-callback)
 - [Known Errors](#known-errors)
 
 <!-- /TOC -->
@@ -826,6 +834,45 @@ Get group avatar raw image
 
 - params {object}
   - groupId {string}
+
+## Node
+
+### .nodes(params, callback)
+
+Get node list
+
+- params [object]
+  - qs [object]
+    - page [number]
+    - page_size [number]
+
+## Query
+
+### .query(params, callback)
+
+Query all
+
+- params [object]
+  - qs [object]
+    - page [number]
+    - page_size [number]
+    - text [string]
+    - type ["all"|"share"|"account"|"group"]
+    - category [string]
+
+## System
+
+### .system(callback)
+
+Get system parameters
+
+## Timeline
+
+### .timeline(params, callback)
+
+- params {object}
+  - accountId {string}
+
 
 # Known Errors
 

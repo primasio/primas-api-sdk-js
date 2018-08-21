@@ -5,8 +5,8 @@ export class System extends Base<any> {
     super(request);
   }
 
-  public system(params: any, success: Callback) {
-    this.createLists('')(params, success);
+  public system(success: Callback) {
+    this.createLists('')({}, success);
   }
 
   protected getUrl(params: any) {
