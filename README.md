@@ -48,6 +48,8 @@ All numbers are treated as big number, you should use [bignumber.js](http://mike
         - [.notifications(params, callback)](#notificationsparams-callback)
         - [.avatar(params, callback)](#avatarparams-callback)
         - [.avatarImg(params, callback)](#avatarimgparams-callback)
+        - [.addressMetadata(address, callback)](#addressmetadataaddress-callback-1)
+        - [.joinedGroups(params, callback)](#joinedgroupsparams-callback)
     - [Token](#token)
         - [.tokens(params, callback)](#tokensparams-callback)
         - [.incentives(params, callback)](#incentivesparams-callback)
@@ -427,6 +429,26 @@ parameters:
 - params {object}
   - accountId {string}
   - [subAccountId] {string}
+
+### .addressMetadata(address, callback)
+
+Get address metadata
+
+parameters:
+
+- address {string}
+
+### .joinedGroups(params, callback)
+
+parameters:
+
+- params {object}
+  - accountId {string}
+  - [subAccountId] {string}
+  - [qs] {object}
+    - [page] {number} Page number. Starts from 0.
+    - [page_size] {number} Page size. Default to 20.
+
 
 ## Token
 

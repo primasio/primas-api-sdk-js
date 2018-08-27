@@ -12,8 +12,10 @@ describe('account test', () => {
     node: conf.node,
   });
   test('show account metadata', done => {
-    p.Account.addressMetadata(
-      '0xa42433b1619993ba2e55db742b61ace9461336a0',
+    p.Account.joinedGroups(
+      {
+        accountId: conf.accountId,
+      },
       (err, res) => {
         expect(err).toBeNull();
         expect(res.data.id).toBe(conf.accountId);
