@@ -21,8 +21,7 @@ import * as Main from './main';
 import { IConfig } from './main/Base';
 import { genPrivateKey, pathResolve } from './utils/util';
 if (
-  process.env.NODE_ENV === 'development' ||
-  process.env.NODE_ENV === 'staging'
+  process.env.NODE_ENV === 'development'
 ) {
   require('request-debug')(request);
 }

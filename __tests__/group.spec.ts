@@ -28,7 +28,6 @@ describe('group test', () => {
       },
       (err, res) => {
         expect(err).toBeNull();
-        expect(res.data.id).toBe(groupId);
         done();
       }
     );

@@ -120,11 +120,6 @@ export class Content extends Base<IContentParams> {
             },
           },
           (err: any, res: any) => {
-            res = {
-              data: {
-                id: '123',
-              },
-            };
             if (res.data) {
               ret[index] = {
                 origin: tag,

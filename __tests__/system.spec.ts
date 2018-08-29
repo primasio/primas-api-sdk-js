@@ -13,7 +13,7 @@ describe('system test', () => {
   });
 
   test('Get system parameters', done => {
-    p.System.system({}, (err, res) => {
+    p.System.system((err, res) => {
       done();
     });
   });

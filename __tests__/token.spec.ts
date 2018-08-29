@@ -43,7 +43,6 @@ describe('token test', () => {
         accountId: conf.accountId,
       },
       (err, res) => {
-        log.info(res);
         expect(err).toBeNull();
         done();
       }
@@ -56,7 +55,6 @@ describe('token test', () => {
         accountId: conf.accountId,
       },
       (err, res) => {
-        log.info(res);
         expect(err).toBeNull();
         done();
       }
@@ -72,7 +70,6 @@ describe('token test', () => {
       if (err) {
         log.error(err);
       }
-      log.debug(res);
       done();
     });
   });
@@ -83,7 +80,6 @@ describe('token test', () => {
         accountId: conf.accountId,
       },
       (err, res) => {
-        log.info(res);
         expect(err).toBeNull();
         done();
       }
@@ -100,7 +96,6 @@ describe('token test', () => {
         if (err) {
           log.error(err);
         }
-        log.debug(res);
         done();
       }
     );
@@ -114,7 +109,6 @@ describe('token test', () => {
       if (err) {
         log.error(err);
       }
-      log.debug(res);
       done();
     });
   });
@@ -125,7 +119,6 @@ describe('token test', () => {
         accountId: conf.accountId,
       },
       (err, res) => {
-        log.info(res);
         expect(err).toBeNull();
         done();
       }
