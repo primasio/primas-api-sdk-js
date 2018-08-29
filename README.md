@@ -1,5 +1,9 @@
 # Primas-nodejs-sdk
 
+[![npm version](https://badge.fury.io/js/primas-sdk-nodejs.svg)](https://badge.fury.io/js/primas-sdk-nodejs)
+
+[![Build Status](https://travis-ci.com/primasio/primas-api-sdk-js.svg?branch=master)](https://travis-ci.com/primasio/primas-api-sdk-js)
+
 Primas sdk for Node env
 
 # Install

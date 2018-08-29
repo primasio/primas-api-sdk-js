@@ -74,8 +74,8 @@ describe('content test', () => {
         abstract: 'this is a test account',
         language: 'en',
         category: 'test',
-        content: fs.readFileSync('/Users/wangmengtao/Documents/logo.png'),
-        // content: Buffer.from([0, 1, 2])
+        // content: fs.readFileSync('/Users/wangmengtao/Documents/logo.png'),
+        content: Buffer.from([0, 1, 2])
       }).send((err, res) => {
         if (err) {
           log.error(err);
@@ -124,8 +124,8 @@ describe('content test', () => {
         abstract: 'this is a test account',
         language: 'en',
         category: 'test',
-        content: fs.readFileSync('/Users/wangmengtao/Documents/logo.png'),
-        // content: Buffer.from([0, 1, 2])
+        // content: fs.readFileSync('/Users/wangmengtao/Documents/logo.png'),
+        content: Buffer.from([0, 1, 2])
       }).send((err, res) => {
         if (err) {
           log.error(err);
