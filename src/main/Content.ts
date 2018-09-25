@@ -27,6 +27,7 @@ import {
 export class Content extends Base<IContentParams> {
   constructor(request: any, protected options?: any, json?: boolean) {
     super(request, options, json);
+    this.create = this.create.bind(this);
   }
 
   /**
@@ -65,8 +66,8 @@ export class Content extends Base<IContentParams> {
     return this;
   }
 
-  public upgradeDTCPLinks(html: string, success: Callback) {
-    this._analysisImg(html).then(data => {
+  public upgradeDTCPLinks(html: string, accountId: string, success: Callback) {
+    this._analysisImg(html, accountId).then(data => {
       this._analysisLink(data).then(data => {
         success(null, data);
       });
@@ -79,7 +80,7 @@ export class Content extends Base<IContentParams> {
   }
 
   protected buildParams(params: any) {
-    params.content_hash = unpad(bufferToHex(keccak256(params.content)));
+    params.content_hash = bufferToHex(keccak256(params.content)).slice(2);
     return super.buildParams(
       defaultsDeep({}, params, {
         type: PRIMAS_API_TYPE.OBJECT,
@@ -87,11 +88,11 @@ export class Content extends Base<IContentParams> {
     );
   }
 
-  private _analysisImg(html) {
+  private _analysisImg(html, accountId: string) {
     return this._analysis(
       html,
-      /<img\s+src="([a-z0-9_:\/\.]*)"\s+\/?>/gi,
-      (this as any).$root.Query.content
+      /<img\s+src="([a-zA-Z0-9_\-:\/\.%&@,\?]*)"\s+\/?>/gi,
+      (params, cb) => { this.$root.Query.content(accountId, params, cb)}
     );
   }
 
@@ -113,22 +114,23 @@ export class Content extends Base<IContentParams> {
       // tslint:disable-next-line:radix
       const index = found.index;
       const p = new Promise((resolve, reject) => {
-        fn.bind(this)(
+        fn(
           {
             qs: {
               url: encodeURI(url),
             },
           },
           (err: any, res: any) => {
-            if (res.data) {
-              ret[index] = {
-                origin: tag,
-                now: tag.replace(
-                  url + '"',
-                  `${url}" data-dtcp-id="${res.data.id}"`
-                ),
-              };
+            if (err) {
+              return reject(err)
             }
+            ret[index] = {
+              origin: tag,
+              now: tag.replace(
+                url + '"',
+                `${this.request.base}/content/${res.id}/raw" data-dtcp-id="${res.id}"`
+              ),
+            };
             resolve();
           }
         );
@@ -143,6 +145,8 @@ export class Content extends Base<IContentParams> {
       } else {
         return html;
       }
+    }).catch(() => {
+      return html;
     });
   }
 

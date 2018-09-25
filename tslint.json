@@ -10,6 +10,7 @@
     "variable-name": false,
     "no-var-requires": false,
     "no-shadowed-variable": false,
-    "only-arrow-functions": false
+    "only-arrow-functions": false,
+    "no-bitwise": false
   }
 }

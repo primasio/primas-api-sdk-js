@@ -58,11 +58,11 @@ export class Token extends Base<ITokenParams> {
   }
 
   public createPreLock(accountId: string, params: any, success: Callback) {
-    this.operator(
-      params,
-      '/accounts/' + accountId + '/tokens/pre_locks',
-      success
-    );
+    this._metadata = defaultsDeep({}, params, {
+                        nonce: this.uuid(),
+                      })
+    this._url = '/accounts/' + accountId + '/tokens/pre_locks';
+    return this;
   }
 
   public unPreLock(accountId: string, params: IIncentive) {
@@ -83,5 +83,14 @@ export class Token extends Base<ITokenParams> {
   protected getUrl(params: ITokenParams) {
     const url = '/accounts/' + params.accountId;
     return url;
+  }
+
+  private uuid() {
+    let d = Date.now();
+    return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = (d + Math.random() * 16) % 16 | 0;
+      d = Math.floor(d / 16);
+      return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+    });
   }
 }

@@ -21,147 +21,145 @@ describe('content test', () => {
     json: false,
   });
 
-  test('show content', (done) => {
-    json.Content.upgradeDTCPLinks(
-      '<p>The original HTML content.</p><p><img src="http://e.c60block.com/images/bip201803252337.jpg" /><div></div><img src="http://e.c60block.com/images/bip201803252337.jpg" /><img src="http://e.c60block.com/images/bip2018032523372.jpg" /></p>',
-      (err: any, res: any) => {
-        if (err) {
-          return log.error(err);
-        }
-      }
-    );
+  // test('show content', done => {
+    // json.Content.upgradeDTCPLinks(
+    //   '<p>The original HTML content.</p><p><img src="https://b-gold-cdn.xitu.io/v3/static/img/conf.78960f5.gif" /><div></div></p>',
+    //   conf.accountId,
+    //   (err: any, res: any) => {
+    //     if (err) {
+    //       return log.error(err);
+    //     }
+    //     console.log(res)
+    //   }
+    // );
 
-    json.Content.content(
-      {
-        contentId:
-          'ba6f8c9214be28655b52a07e96164262bb90d52b070355702b88fa7e336f5a3b',
-      },
-      (err, res) => {
-        if (err) {
-          log.error(err);
-          return;
-        }
-        done();
-      }
-    );
-  });
+    // json.Content.content(
+    //   {
+    //     contentId:
+    //       '8b582f7335113eed21f52740d3bd0dbe5cc753b31bf4c136fb8dc6403ae0cd76',
+    //   },
+    //   (err, res) => {
+    //     if (err) {
+    //       log.error(err);
+    //       return;
+    //     }
+    //     done();
+    //   }
+    // );
+  // });
 
-  test('show image raw', done => {
-    json.Content.raw(
-      {
-        contentId:
-          '55d0adc13c57f679d36947f793ff3f0497815a8b701a86f5d784bc4f6c90ac04',
-      },
-      (err, res) => {
-        if (err) {
-          log.error(err);
-          return;
-        }
-        expect(err).toBeNull();
-        done();
-      }
-    );
-  });
+//   test('show image raw', done => {
+//     json.Content.raw(
+//       {
+//         contentId:
+//           '59dafa705a3b619f74dbc5220d6bba60a52de5b1c5175e48906ac20c4b11de07',
+//       },
+//       (err, res) => {
+//         if (err) {
+//           log.error(err);
+//           return;
+//         }
+//         expect(err).toBeNull();
+//         done();
+//       }
+//     );
+// });
 
-  describe('json', () => {
-    test('create image content', done => {
-      json.Content.create({
-        tag: 'image',
-        title: 'test',
-        creator: {
-          account_id: conf.accountId,
-        },
-        abstract: 'this is a test account',
-        language: 'en',
-        category: 'test',
-        // content: fs.readFileSync('/Users/wangmengtao/Documents/logo.png'),
-        content: Buffer.from([0, 1, 2])
-      }).send((err, res) => {
-        if (err) {
-          log.error(err);
-          return;
-        }
-        // log.debug(res);
-        // expect(res.data.id).not.toBeNull();
-        // id = res.data.id;
-        done();
-      });
-    });
-
-    test('create html content', done => {
-      json.Content.create({
-        tag: 'article',
-        title: 'test',
-        creator: {
-          account_id: conf.accountId,
-        },
-        abstract: 'this is a test account',
-        language: 'en',
-        category: 'test',
-        content: `<div>牛逼</div>`,
-        // content: Buffer.from([0, 1, 2])
-      }).send((err, res) => {
-        if (err) {
-          log.error(err);
-          return;
-        }
-        // log.debug(res);
-        // expect(res.data.id).not.toBeNull();
-        // id = res.data.id;
-        done();
-      });
-    });
-  });
-
+// describe('json', () => {
+  // test('create image content', done => {
+  //   json.Content.create({
+  //     tag: 'image',
+  //     title: 'test',
+  //     creator: {
+  //       account_id: conf.accountId,
+  //     },
+  //     abstract: 'this is a test account',
+  //     language: 'en',
+  //     category: 'test',
+  //     content: fs.readFileSync('/Users/wangmengtao/Downloads/logoquan14782785967.png'),
+  //     // content: Buffer.from([0, 1, 2])
+  //   }).send((err, res) => {
+  //     if (err) {
+  //       log.error(err);
+  //       return;
+  //     }
+  //     // log.debug(res);
+  //     // expect(res.data.id).not.toBeNull();
+  //     // id = res.data.id;
+  //     done();
+  //   });
+  // });
+  // test('create html content', done => {
+  //     json.Content.create({
+  //       tag: 'article',
+  //       title: '2018年最值得关注学习的25个JavaScript开源项目',
+  //       creator: {
+  //         account_id: conf.accountId,
+  //       },
+  //         abstract: '2018年最值得关注学习的25个JavaScript开源项目',
+  //         language: 'zh',
+  //         category: 'javascript',
+  //         content: `<h1 data-v-13f76525="" class="article-title">2018年最值得关注学习的25个JavaScript开源项目</h1>`,
+  //       // content: Buffer.from([0, 1, 2])
+  //     }).send((err, res) => {
+  //       if (err) {
+  //         log.error(err);
+  //         return;
+  //       }
+  //       // log.debug(res);
+  //       // expect(res.data.id).not.toBeNull();
+  //       // id = res.data.id;
+  //       done();
+  //     });
+  //   });
+  // });
   describe('form', () => {
-    test('create content', done => {
-      form.Content.create({
-        tag: 'image',
-        title: 'test',
-        creator: {
-          account_id: conf.accountId,
-        },
-        abstract: 'this is a test account',
-        language: 'en',
-        category: 'test',
-        // content: fs.readFileSync('/Users/wangmengtao/Documents/logo.png'),
-        content: Buffer.from([0, 1, 2])
-      }).send((err, res) => {
-        if (err) {
-          log.error(err);
-          return;
-        }
-        // log.debug(res);
-        // expect(res.data.id).not.toBeNull();
-        // id = res.data.id;
-        done();
-      });
-    });
-
-    test('create html content', done => {
-      form.Content.create({
-        tag: 'article',
-        title: 'test',
-        creator: {
-          account_id: conf.accountId,
-        },
-        abstract: 'this is a test account',
-        language: 'en',
-        category: 'test',
-        content: `<div>牛逼</div>`,
-        // content: Buffer.from([0, 1, 2])
-      }).send((err, res) => {
-        if (err) {
-          log.error(err);
-          return;
-        }
-        // log.debug(res);
-        // expect(res.data.id).not.toBeNull();
-        // id = res.data.id;
-        done();
-      });
-    });
-
+  //   test('create content', done => {
+  //     form.Content.create({
+  //       tag: 'image',
+  //       title: 'test',
+  //       creator: {
+  //         account_id: conf.accountId,
+  //       },
+  //       abstract: 'this is a test account',
+  //       language: 'en',
+  //       category: 'test',
+  //       // content: fs.readFileSync('/Users/wangmengtao/Documents/logo.png'),
+  //       content: Buffer.from([0, 1, 2])
+  //     }).send((err, res) => {
+  //       if (err) {
+  //         log.error(err);
+  //         return;
+  //       }
+  //       // log.debug(res);
+  //       // expect(res.data.id).not.toBeNull();
+  //       // id = res.data.id;
+  //       done();
+  //     });
+  //   });
+    // test('create html content', done => {
+    //   form.Content.create({
+    //     tag: 'article',
+    //     title: '2018年最值得关注学习的25个JavaScript开源项目',
+    //     creator: {
+    //       account_id: conf.accountId,
+    //     },
+    //     abstract: '2018年最值得关注学习的25个JavaScript开源项目',
+    //     language: 'zh',
+    //     category: 'javascript',
+    //     content: `<h1 data-v-13f76525="" class="article-title">2018年最值得关注学习的25个JavaScript开源项目</h1>`,
+    //     // content: Buffer.from([0, 1, 2])
+    //   }).send((err, res) => {
+    //     if (err) {
+    //       log.error(err);
+    //       return;
+    //     }
+    //     // log.debug(res);
+    //     // expect(res.data.id).not.toBeNull();
+    //     // id = res.data.id;
+    //     done();
+    //   });
+    // });
     test('update html content', done => {
       form.Content.update(
         'ba6f8c9214be28655b52a07e96164262bb90d52b070355702b88fa7e336f5a3b',

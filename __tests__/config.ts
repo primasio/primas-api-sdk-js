@@ -16,4 +16,20 @@ export default {
     address: '0xa42433b1619993ba2e55db742b61ace9461336a0',
     passphrase: 'wheethereum',
   },
+  staging3: {
+    accountId:
+      '2fe750b56cc7f0949803fdd94075337cfb64a8f48c44b542ac4daaa52b799886',
+    accountDna:
+      '6f5bd7d607c988369608404dab1253e638c71b6fbdf04d8c967e6b42b7e3eaa5',
+    address: '0xd75407ad8cabeeebfed78c4f3794208b3339fbf4',
+    passphrase: 'Test123:::',
+  },
+  staging1: {
+    accountId:
+      '2fe750b56cc7f0949803fdd94075337cfb64a8f48c44b542ac4daaa52b799886',
+    accountDna:
+      '6f5bd7d607c988369608404dab1253e638c71b6fbdf04d8c967e6b42b7e3eaa5',
+    address: '0xe421bc293edfedb06c4fba7ed5ca7f0295af8c23',
+    passphrase: '123456',
+  },
 };

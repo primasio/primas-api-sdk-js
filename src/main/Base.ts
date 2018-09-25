@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
+import BigNumber from 'bignumber.js';
 import defaultsDeep = require('lodash/defaultsDeep');
 import JSON from '../utils/JSONBigNumber';
 import { sign, sort } from '../utils/util';
+import { BN, toBuffer } from 'ethereumjs-util';
 
 /**
  * basic types
@@ -146,6 +148,7 @@ function toBase64(data: string | Buffer) {
  * Base Class
  */
 export abstract class Base<T extends IParams> {
+  public $root: any;
   protected _metadata: any = {};
   protected _url: string = '';
   protected _method: string = '';
@@ -168,6 +171,11 @@ export abstract class Base<T extends IParams> {
     if (!this._metadata.signature) {
       throw new Error('you must sign before send');
     }
+    if (this._metadata.nonce) {
+      this._metadata = {
+        transaction: JSON.stringify(this._metadata)
+      }
+    }
     this.operator(this._metadata, this._url, callback, this._method);
     this._method = '';
   }
@@ -180,6 +188,23 @@ export abstract class Base<T extends IParams> {
       this._metadata.content = content;
       return ret;
     }
+
+    function padBuffer (buf, len) {
+      const ret = Buffer.alloc(len);
+      for (let i = 0; i < buf.length; i ++) {
+        ret[len - buf.length + i] = buf[i];
+      }
+      return ret;
+    }
+
+    if (this._metadata.nonce) {
+      const a = new BN('1000000000000000000').mul(
+        new BN(this._metadata.amount)
+      );
+      this._metadata.amount = new BigNumber(a);
+      return Buffer.concat([toBuffer(this._metadata.address), padBuffer(a.toBuffer(), 32), toBuffer(this._metadata.nonce)])
+    }
+
     return JSON.stringify(sort(this._metadata));
   }
 
@@ -221,6 +246,9 @@ export abstract class Base<T extends IParams> {
       }
       if (/application\/json/.test(res.headers['content-type'])) {
         body = JSON.parse(body);
+        if (body.result_code) {
+          body.result_code = body.result_code.toNumber();
+        }
       }
       success(null, body);
     });
@@ -251,6 +279,9 @@ export abstract class Base<T extends IParams> {
           }
           if (/application\/json/.test(res.headers['content-type'])) {
             body = JSON.parse(body);
+            if (body.result_code) {
+              body.result_code = body.result_code.toNumber();
+            }
           }
           success(null, body);
         }

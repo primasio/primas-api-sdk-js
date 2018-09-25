@@ -21,7 +21,8 @@ import * as Main from './main';
 import { IConfig } from './main/Base';
 import { genPrivateKey, pathResolve } from './utils/util';
 if (
-  process.env.NODE_ENV === 'development'
+  process.env.NODE_ENV === 'development' ||
+  process.env.NODE_ENV === 'staging'
 ) {
   require('request-debug')(request);
 }
@@ -49,6 +50,7 @@ class Primas {
       };
     }
     baseRequest = request.defaults(defaultConfig);
+    baseRequest.base = myConf.node;
     if (myConf.passphrase) {
       const privateKey = genPrivateKey(
         myConf.address,
@@ -69,7 +71,7 @@ class Primas {
           options,
           myConf.json
         );
-        (Main as any)[k].prototype.$root = this;
+        (this as any)[k].$root = this;
       }
     }
   }

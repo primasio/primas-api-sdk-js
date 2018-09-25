@@ -15,18 +15,28 @@
  */
 
 import { Base, Callback } from './Base';
+import * as req from 'request';
+import * as path from 'path';
 
 export class Query extends Base<any> {
-  constructor(request: any) {
-    super(request);
+  constructor(request: any, protected options?: any, json?: boolean) {
+    super(request, options, json);
+    this.content = this.content.bind(this);
+    this.reproductions = this.reproductions.bind(this);
   }
 
   public query(params: any, success: Callback) {
     this.createLists('')(params, success);
   }
 
-  public content(params: any, success: Callback) {
-    this.createLists('content')(params, success);
+  public content(accountId: string, params: any, success: Callback) {
+    this.createLists('content')(params, (err, res) => {
+      if (res.data.length === 0) {
+        this.uploadImage(params.qs.url, accountId, success)
+      } else {
+        success(null, res.data)
+      }
+    });
   }
 
   public reproductions(params: any, success: Callback) {
@@ -35,5 +45,41 @@ export class Query extends Base<any> {
 
   protected getUrl(params: any) {
     return '/query';
+  }
+
+  private uploadImage (image: string, accountId: string, cb: Callback) {
+    const rs = req({
+      uri: image,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.92 Safari/537.36'
+      }
+    });
+    let buf = Buffer.alloc(0);
+    rs.on('data', function(chunk){
+      buf = Buffer.concat([buf, chunk])
+    });
+    rs.on('end', () => {
+      this.$root.Content.create({
+        tag: 'image',
+        title: path.basename(image),
+        creator: {
+          account_id: accountId,
+        },
+        abstract: `external link images, the original image url is '${image}'`,
+        language: 'en',
+        category: 'image',
+        content: buf,
+      }).send((err, res) => {
+        if (err) {
+          return;
+        }
+        if (res.result_code === 0) {
+          cb(null, res.data)
+        } else {
+          cb(res.result_msg)
+        }
+      });
+    })
+
   }
 }
